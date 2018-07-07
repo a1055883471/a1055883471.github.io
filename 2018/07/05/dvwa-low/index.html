@@ -425,7 +425,7 @@ if( isset( $_GET[ &apos;Login&apos; ] ) ) {
 }
 ?&gt;
 </code></pre><p>服务器对输入的username与password没有做限制，这就存在sql注入漏洞 <br><br>关键点在于<br><code>&quot;SELECT * FROM &#39;users&#39; WHERE user = &#39;$user&#39; AND password = &#39;$pass&#39;;&quot;</code> <br><br>这条语句 <br><br>当用户输入的username的值为admin’ or ‘1’=’1时，整条语句就会变为<br><code>&quot;SELECT * FROM &#39;users&#39; WHERE user = &#39;admin&#39; or &#39;1&#39;=&#39;1&#39; AND password = &#39;$pass&#39;;&quot;</code><br>这条语句的逻辑为当user为admin或者当1=1时，整条语句为真 <br><br>然而1=1永远为真，所以整条语句为真 <br><br>语句返回一个true，即1，存到结果集中，这与输入正确的用户名和密码导致的结果是一样的 <br><br>结果就是攻击者不需要知道admin的密码就登录了admin的账号</p>
-<h1 id="Command-Injection"><a href="#Command-Injection" class="headerlink" title="Command Injection"></a>Command Injection</h1><p>远程命令注入<br>核心代码：</p>
+<h1 id="Command-Injection"><a href="#Command-Injection" class="headerlink" title="Command Injection"></a>Command Injection</h1><p>远程命令注入 <br><br>核心代码：</p>
 <pre><code>&lt;?php 
 
 if( isset( $_POST[ &apos;Submit&apos; ]  ) ) { 
@@ -774,24 +774,26 @@ if( array_key_exists( &quot;name&quot;, $_GET ) &amp;&amp; $_GET[ &apos;name&apo
     <!-- 评论插件 -->
     <!-- 来必力City版安装代码 -->
 
-    <div id="lv-container" data-id="city" data-uid= MTAyMC8zNzg0Ni8xNDM3Ng==>
-        <script type="text/javascript">
-            (function (d, s) {
-                var j, e = d.getElementsByTagName(s)[0];
-                if (typeof LivereTower === 'function') { return; }
-                j = d.createElement(s);
-                j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
-                j.async = true;
-
-                e.parentNode.insertBefore(j, e);
-            })(document, 'script');
-        </script>
-        <noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
-    </div>
-
 <!-- City版安装代码已完成 -->
     
     
+<div id="container"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+    var gitment = new Gitment({
+        // id: "基于DVWA的web漏洞原理-low", // 可选。默认为 location.href
+        owner: 'a1055883471',
+        repo: 'a1055883471.github.io',
+        oauth: {
+            client_id: '4514a03a15dc92fbdd90',
+            client_secret: 'cdffbd6889428a82f7232c85f4ccd95cf70b2211',
+        },
+    })
+    gitment.render('container')
+
+</script>
+
     <!--PC和WAP自适应版-->
 
     <!--PC版-->
