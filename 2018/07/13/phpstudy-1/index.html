@@ -705,8 +705,14 @@ $arr2 = [&apos;key&apos;=&gt;&apos;value&apos;];
 </code></pre><p>隐式创建 <br></p>
 <pre><code>$arr = array();
 $arr[&apos;key&apos;] = &apos;value&apos;;
-</code></pre><h3 id="多维数组"><a href="#多维数组" class="headerlink" title="多维数组"></a>多维数组</h3><p>PHP中支持多维数组，如果一个数组的元素又是数组，那么就是多维数组。(最多支持60维) <br><br>显示创建 <br><br>    $arr = array(<br>        ‘userInfo’ =&gt; array(‘id’=&gt;1, ‘username’=&gt;’Json’)<br>    );<br>    $arr2 = [<br>        ‘userInfo’ =&gt; array(‘id’=&gt;1, ‘username’=&gt;’Json’)<br>    ];</p>
-<p>隐式创建</p>
+</code></pre><h3 id="多维数组"><a href="#多维数组" class="headerlink" title="多维数组"></a>多维数组</h3><p>PHP中支持多维数组，如果一个数组的元素又是数组，那么就是多维数组。(最多支持60维) <br><br>显示创建 <br></p>
+<pre><code>$arr = array(
+    &apos;userInfo&apos; =&gt; array(&apos;id&apos;=&gt;1, &apos;username&apos;=&gt;&apos;Json&apos;)
+);
+$arr2 = [
+    &apos;userInfo&apos; =&gt; array(&apos;id&apos;=&gt;1, &apos;username&apos;=&gt;&apos;Json&apos;)
+];
+</code></pre><p>隐式创建</p>
 <pre><code>$arr3 = array();
 $arr3[&apos;userInfo&apos;] = array(&apos;id&apos;=&gt;1, &apos;username&apos;=&gt;&apos;Json&apos;);
 </code></pre><h3 id="数组元素的访问-1"><a href="#数组元素的访问-1" class="headerlink" title="数组元素的访问"></a>数组元素的访问</h3><p>一维数组    $数组名[下标/键名] <br><br>echo $arr[‘userInfo’]; <br><br>二维数组    $数组名[行下标/列下标] <br><br>echo $arr[‘userInfo’][‘id’]; <br></p>
