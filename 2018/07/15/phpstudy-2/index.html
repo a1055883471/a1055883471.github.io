@@ -267,7 +267,7 @@ height:50vh;
                 
                 
                     <div class="post-intro-read">
-                        <span>Word count: <span class="post-count">758</span> / Reading time: <span class="post-count">3 min</span></span>
+                        <span>Word count: <span class="post-count">1,360</span> / Reading time: <span class="post-count">6 min</span></span>
                     </div>
                 
                 <div class="post-intro-meta">
@@ -456,7 +456,94 @@ echo sprintf(&apos;二进制为:%b&lt;br /&gt;十进制为:%d&lt;br /&gt;八进�
   // 循环体
 &lt;?php }?&gt;
 </code></pre><h1 id="系统函数"><a href="#系统函数" class="headerlink" title="系统函数"></a>系统函数</h1><h2 id="日期和时间函数"><a href="#日期和时间函数" class="headerlink" title="日期和时间函数"></a>日期和时间函数</h2><p>time() <br><br>    用于获取当前时间的时间戳，单位是秒。时间戳是从时间原点至现在的一个秒数。 <br><br>    时间原点：计算机中规定从1970年1月1日0时0分0秒那一刻作为时间原点 <br><br>microtime() <br><br>    用于计算毫秒，毫秒永远小于1 <br><br>date(format [,time]) <br><br>    用于格式化时间信息 <br><br>    format用于格式化时间的字符串，time表示需要格式化的时间戳 <br><br>mktime(时，分，秒，月，日，年) <br><br>    用于获取一个指定的时间戳  <br><br>strtotime(string) <br><br>    讲一个以字符形式描述的时间转换为时间戳，可以快速运算出例如密码更换策略等</p>
+<h1 id="遍历数组"><a href="#遍历数组" class="headerlink" title="遍历数组"></a>遍历数组</h1><h2 id="while-each-list遍历"><a href="#while-each-list遍历" class="headerlink" title="while-each-list遍历"></a>while-each-list遍历</h2><p>使用while、each、list语法结构来遍历数组 <br></p>
+<h3 id="each"><a href="#each" class="headerlink" title="each"></a>each</h3><p>each(数组) <br><br>    用于获取当前指针所指的键名与键值</p>
+<pre><code>$arr = [&apos;key&apos;=&gt;&apos;value&apos;];
+print_r(each($arr));
+Array
+(
+    [1] =&gt; value
+    [value] =&gt; value
+    [0] =&gt; key
+    [key] =&gt; key
+)
+</code></pre><h3 id="list"><a href="#list" class="headerlink" title="list"></a>list</h3><p>list(); <br><br>将数组中的索引元素赋值给变量列表中的变量。 <br></p>
+<pre><code>$arr = [10,20,30,40];
+list($a, $b, $c, $d) = $arr;
+</code></pre><p>用each+list遍历数组：</p>
+<pre><code>$arr = array(&apos;one&apos;=&gt;&apos;1&apos;, &apos;two&apos;=&gt;&apos;2&apos;, &apos;three&apos;=&gt;&apos;3&apos;);
+while(list($k,$v) = each($arr)){
+  echo $k.&apos;=&gt;&apos;.$v,&apos;&lt;br/&gt;&apos;;
+}
+</code></pre><p>先将each($arr)的值赋给list($k,$v)，然后拿list($k,$v)作为表达式，即$k,当遍历有值的时候，$k=true,当遍历到最后的null的时候$k=flase</p>
+<h2 id="foreach-list遍历"><a href="#foreach-list遍历" class="headerlink" title="foreach-list遍历"></a>foreach-list遍历</h2><pre><code>// php&gt;5.6
+// 注意：list只能使用索引数组
+$arr = [
+  [1,2,3,4]
+];
 
+foreach($arr as list($a, $b, $c, $d)){
+  echo $a,$b,$c,$d;
+}
+</code></pre><h1 id="数组算法"><a href="#数组算法" class="headerlink" title="数组算法"></a>数组算法</h1><h2 id="排序法"><a href="#排序法" class="headerlink" title="排序法"></a>排序法</h2><h3 id="冒泡排序法"><a href="#冒泡排序法" class="headerlink" title="冒泡排序法"></a>冒泡排序法</h3><p>注意内循环的条件与外循环的条件 <br><br>外循环中，由于是交换两个数，只需要循环数组数-1即可 <br><br>内循环中，由于每一个循环都会把最大值放到最右边，所以最右边的界限需要不断改变 <br></p>
+<pre><code>$arr = [10,5,100,255,64,1];
+$len = count($arr);
+for($i=1;$i&lt;$len ;$i++){
+    for($j=0;$j&lt;$len-$i;$j++){
+        if($arr[$j]&gt;$arr[$j+1]){
+            $temp = $arr[$j];
+            $arr[$j] = $arr[$j+1];
+            $arr[$j+1] = $temp;
+        }
+    }
+}
+foreach($arr as $value){
+    echo &apos;[&apos;.$value.&apos;],&apos;;
+}
+</code></pre><h3 id="插入排序法"><a href="#插入排序法" class="headerlink" title="插入排序法"></a>插入排序法</h3><p>1、从第一个元素开始，第一个元素已经被排列 <br><br>2、在取下一个元素，将其和已经排序的元素中从后往前比较 <br><br>3、如果以排列元素大于新元素，那么交换两者位置 <br><br>4、重复步骤3，直到以排序元素小于或者等于新元素 <br><br>5、重复2-4步骤 <br></p>
+<pre><code>$arr = [10,5,100,255,64,1];
+for($i=1;$i&lt;count($arr);$i++){
+    $tmp = $arr[$i];
+    for($j=$i-1;$j&gt;=0;$j--){
+        if($arr[$j]&gt;$arr[$j+1]){
+            $arr[$j+1] = $arr[$j];
+            $arr[$j] = $tmp;
+        }
+    }
+}    
+print_r($arr);
+</code></pre><h2 id="查找算法"><a href="#查找算法" class="headerlink" title="查找算法"></a>查找算法</h2><h3 id="顺序查找法"><a href="#顺序查找法" class="headerlink" title="顺序查找法"></a>顺序查找法</h3><pre><code>unction searchArr($arr, $search){
+    for($i=0;$i&lt;=count($arr);$i++){
+        if($arr[$i]==$search){
+            echo $search;
+            break;
+        }
+    }
+}
+
+$arr = [10,5,100,255,64,1];
+searchArr($arr, &apos;64&apos;);
+</code></pre><h3 id="二分查找法"><a href="#二分查找法" class="headerlink" title="二分查找法"></a>二分查找法</h3><p>前提为数组有序并不重复 <br><br>可以简单的把数组想象成一个轴，对轴进行二分 <br></p>
+<pre><code>$arr = [1,2,3,4,5,6,12,15,17,18,32,55,73,74,89];
+
+
+function searchArr($arr, $search){
+    $left = 0;
+    $right = count($arr);
+    while($left &lt;= $right){
+        $mid = ceil(($left + $right) / 2);
+        if($search &gt; $arr[$mid]){
+            $left = $mid + 1;
+        }elseif($search &lt; $arr[$mid]){
+            $right = $mid - 1;
+        }else{
+            return &apos;yes&apos;;
+        }
+    }
+    return &apos;no,not exists&apos;;
+}
+echo searchArr($arr, 15);
+</code></pre>
     </article>
     <!-- license  -->
     
@@ -605,7 +692,7 @@ top:50vh;
         <div class="toc-catalog">
             <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
         </div>
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#两个变量互换位置"><span class="toc-number">1.</span> <span class="toc-text">两个变量互换位置</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#借助第三个变量"><span class="toc-number">1.1.</span> <span class="toc-text">借助第三个变量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#利用加减法"><span class="toc-number">1.2.</span> <span class="toc-text">利用加减法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#利用异或"><span class="toc-number">1.3.</span> <span class="toc-text">利用异或</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#进制转换函数"><span class="toc-number">2.</span> <span class="toc-text">进制转换函数</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#php中的输出语句"><span class="toc-number">3.</span> <span class="toc-text">php中的输出语句</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#echo"><span class="toc-number">3.1.</span> <span class="toc-text">echo</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#print"><span class="toc-number">3.2.</span> <span class="toc-text">print()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#print-r"><span class="toc-number">3.3.</span> <span class="toc-text">print_r()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#var-dump"><span class="toc-number">3.4.</span> <span class="toc-text">var_dump()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sprintf"><span class="toc-number">3.5.</span> <span class="toc-text">sprintf()</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#PHP标签语法"><span class="toc-number">4.</span> <span class="toc-text">PHP标签语法</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#系统函数"><span class="toc-number">5.</span> <span class="toc-text">系统函数</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#日期和时间函数"><span class="toc-number">5.1.</span> <span class="toc-text">日期和时间函数</span></a></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#两个变量互换位置"><span class="toc-number">1.</span> <span class="toc-text">两个变量互换位置</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#借助第三个变量"><span class="toc-number">1.1.</span> <span class="toc-text">借助第三个变量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#利用加减法"><span class="toc-number">1.2.</span> <span class="toc-text">利用加减法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#利用异或"><span class="toc-number">1.3.</span> <span class="toc-text">利用异或</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#进制转换函数"><span class="toc-number">2.</span> <span class="toc-text">进制转换函数</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#php中的输出语句"><span class="toc-number">3.</span> <span class="toc-text">php中的输出语句</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#echo"><span class="toc-number">3.1.</span> <span class="toc-text">echo</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#print"><span class="toc-number">3.2.</span> <span class="toc-text">print()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#print-r"><span class="toc-number">3.3.</span> <span class="toc-text">print_r()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#var-dump"><span class="toc-number">3.4.</span> <span class="toc-text">var_dump()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sprintf"><span class="toc-number">3.5.</span> <span class="toc-text">sprintf()</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#PHP标签语法"><span class="toc-number">4.</span> <span class="toc-text">PHP标签语法</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#系统函数"><span class="toc-number">5.</span> <span class="toc-text">系统函数</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#日期和时间函数"><span class="toc-number">5.1.</span> <span class="toc-text">日期和时间函数</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#遍历数组"><span class="toc-number">6.</span> <span class="toc-text">遍历数组</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#while-each-list遍历"><span class="toc-number">6.1.</span> <span class="toc-text">while-each-list遍历</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#each"><span class="toc-number">6.1.1.</span> <span class="toc-text">each</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#list"><span class="toc-number">6.1.2.</span> <span class="toc-text">list</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#foreach-list遍历"><span class="toc-number">6.2.</span> <span class="toc-text">foreach-list遍历</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#数组算法"><span class="toc-number">7.</span> <span class="toc-text">数组算法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#排序法"><span class="toc-number">7.1.</span> <span class="toc-text">排序法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#冒泡排序法"><span class="toc-number">7.1.1.</span> <span class="toc-text">冒泡排序法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#插入排序法"><span class="toc-number">7.1.2.</span> <span class="toc-text">插入排序法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#查找算法"><span class="toc-number">7.2.</span> <span class="toc-text">查找算法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#顺序查找法"><span class="toc-number">7.2.1.</span> <span class="toc-text">顺序查找法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二分查找法"><span class="toc-number">7.2.2.</span> <span class="toc-text">二分查找法</span></a></li></ol></li></ol></li></ol>
     </div>
     
     <div class="back-top iconfont-archer">&#xe639;</div>
@@ -618,12 +705,6 @@ top:50vh;
     <div class="sidebar-content sidebar-content-show-archive">
           <div class="sidebar-panel-archives">
     <!-- 在ejs中将archive按照时间排序 -->
-    
-    
-    
-    
-    
-    
     
     
     
@@ -711,25 +792,6 @@ top:50vh;
     
         </ul>
     
-    <div class="archive-year"> 2018 </div>
-    <ul class="year-list">
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">07/07</span><a class="archive-post-title" href= "/2018/07/07/dvwa-medium/" >基于DVWA的web漏洞原理-medium</a>
-        </li>
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">07/05</span><a class="archive-post-title" href= "/2018/07/05/problem/" >搭博客过程中遇到的一些问题</a>
-        </li>
-    
-    
-    
-    
-    
-        </ul>
-    
     <div class="archive-year"> Invalid date </div>
     <ul class="year-list">
     
@@ -750,6 +812,25 @@ top:50vh;
     
         <li class="archive-post-item">
             <span class="archive-post-date">Invalid date</span><a class="archive-post-title" href= "/2018/07/05/dvwa-low/" >基于DVWA的web漏洞原理-low</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
+    
+    <div class="archive-year"> 2018 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/07</span><a class="archive-post-title" href= "/2018/07/07/dvwa-medium/" >基于DVWA的web漏洞原理-medium</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/05</span><a class="archive-post-title" href= "/2018/07/05/problem/" >搭博客过程中遇到的一些问题</a>
         </li>
     
     
@@ -810,9 +891,9 @@ jsonContent:
     
         <span class="sidebar-category-name" data-categories="web安全"><span class="iconfont-archer">&#xe60a;</span>web安全</span>
     
-        <span class="sidebar-category-name" data-categories="其他"><span class="iconfont-archer">&#xe60a;</span>其他</span>
-    
         <span class="sidebar-category-name" data-categories="笔记"><span class="iconfont-archer">&#xe60a;</span>笔记</span>
+    
+        <span class="sidebar-category-name" data-categories="其他"><span class="iconfont-archer">&#xe60a;</span>其他</span>
     
     </div>
     <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
