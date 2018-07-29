@@ -267,7 +267,7 @@ height:50vh;
                 
                 
                     <div class="post-intro-read">
-                        <span>Word count: <span class="post-count">3,663</span> / Reading time: <span class="post-count">15 min</span></span>
+                        <span>Word count: <span class="post-count">3,665</span> / Reading time: <span class="post-count">15 min</span></span>
                     </div>
                 
                 <div class="post-intro-meta">
@@ -430,7 +430,7 @@ if( isset( $_GET[ &apos;Login&apos; ] ) ) {
     ((is_null($___mysqli_res = mysqli_close($GLOBALS[&quot;___mysqli_ston&quot;]))) ? false : $___mysqli_res);
 }
 ?&gt;
-</code></pre><p>服务器对输入的username与password没有做限制，这就存在sql注入漏洞 <br><br>关键点在于<br><code>&quot;SELECT * FROM &#39;users&#39; WHERE user = &#39;$user&#39; AND password = &#39;$pass&#39;;&quot;</code> <br><br>这条语句 <br><br>当用户输入的username的值为admin’ or ‘1’=’1时，整条语句就会变为<br><code>&quot;SELECT * FROM &#39;users&#39; WHERE user = &#39;admin&#39; or &#39;1&#39;=&#39;1&#39; AND password = &#39;$pass&#39;;&quot;</code><br>这条语句的逻辑为当user为admin或者当1=1时，整条语句为真 <br><br>然而1=1永远为真，所以整条语句为真 <br><br>语句返回一个true，即1，存到结果集中，这与输入正确的用户名和密码导致的结果是一样的 <br><br>结果就是攻击者不需要知道admin的密码就登录了admin的账号</p>
+</code></pre><p>服务器对输入的username与password没有做限制，这就存在sql注入漏洞 <br><br>关键点在于<br><code>&quot;SELECT * FROM &#39;users&#39; WHERE user = &#39;$user&#39; AND password = &#39;$pass&#39;;&quot;</code> <br><br>这条语句 <br><br>当用户输入的username的值为admin’ or ‘1’=’1时，整条语句就会变为<br><code>&quot;SELECT * FROM &#39;users&#39; WHERE user = &#39;admin&#39; or &#39;1&#39;=&#39;1&#39; AND password = &#39;$pass&#39;;&quot;</code><br>这条语句的逻辑为当user为admin或者当1=1为真时，整条语句为真 <br><br>然而1=1永远为真，所以整条语句为真 <br><br>语句返回一个true，即1，存到结果集中，这与输入正确的用户名和密码导致的结果是一样的 <br><br>结果就是攻击者不需要知道admin的密码就登录了admin的账号</p>
 <h1 id="Command-Injection"><a href="#Command-Injection" class="headerlink" title="Command Injection"></a>Command Injection</h1><p>远程命令注入 <br><br>核心代码：</p>
 <pre><code>&lt;?php 
 
@@ -979,9 +979,51 @@ top:50vh;
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     <div class="total-and-search">
         <div class="total-archive">
-        Total : 6
+        Total : 8
         </div>
         <!-- search  -->
         
@@ -991,20 +1033,6 @@ top:50vh;
     
     
     
-    
-    <div class="archive-year"> Invalid date </div>
-    <ul class="year-list">
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">Invalid date</span><a class="archive-post-title" href= "/2018/07/13/phpstudy-1/" >php学习笔记-基础部分</a>
-        </li>
-    
-    
-    
-    
-    
-        </ul>
     
     <div class="archive-year"> Invalid date </div>
     <ul class="year-list">
@@ -1025,7 +1053,7 @@ top:50vh;
     
     
         <li class="archive-post-item">
-            <span class="archive-post-date">Invalid date</span><a class="archive-post-title" href= "/2018/07/05/dvwa-low/" >基于DVWA的web漏洞原理-low</a>
+            <span class="archive-post-date">Invalid date</span><a class="archive-post-title" href= "/2018/07/29/phpstudy-3/" >php学习笔记-核心编程</a>
         </li>
     
     
@@ -1043,8 +1071,59 @@ top:50vh;
         </li>
     
     
+    
+    
+    
+        </ul>
+    
+    <div class="archive-year"> Invalid date </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span><a class="archive-post-title" href= "/2018/07/19/sqli-labs/" >sqli-libs解题思路-Basic Challenges</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
+    
+    <div class="archive-year"> 2018 </div>
+    <ul class="year-list">
+    
+    
         <li class="archive-post-item">
             <span class="archive-post-date">07/05</span><a class="archive-post-title" href= "/2018/07/05/problem/" >搭博客过程中遇到的一些问题</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
+    
+    <div class="archive-year"> Invalid date </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span><a class="archive-post-title" href= "/2018/07/13/phpstudy-1/" >php学习笔记-基础部分</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
+    
+    <div class="archive-year"> Invalid date </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span><a class="archive-post-title" href= "/2018/07/05/dvwa-low/" >基于DVWA的web漏洞原理-low</a>
         </li>
     
     
@@ -1069,6 +1148,8 @@ top:50vh;
         <span class="sidebar-tag-name" data-tags="dvwa"><span class="iconfont-archer">&#xe606;</span>dvwa</span>
     
         <span class="sidebar-tag-name" data-tags="php学习"><span class="iconfont-archer">&#xe606;</span>php学习</span>
+    
+        <span class="sidebar-tag-name" data-tags="sqli-libs"><span class="iconfont-archer">&#xe606;</span>sqli-libs</span>
     
     </div>
     <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
