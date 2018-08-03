@@ -267,7 +267,7 @@ height:50vh;
                 
                 
                     <div class="post-intro-read">
-                        <span>Word count: <span class="post-count">302</span> / Reading time: <span class="post-count">1 min</span></span>
+                        <span>Word count: <span class="post-count">364</span> / Reading time: <span class="post-count">1 min</span></span>
                     </div>
                 
                 <div class="post-intro-meta">
@@ -399,9 +399,17 @@ height:50vh;
         <p>珍爱生命，远离php<br><a id="more"></a></p>
 <h1 id="前台后台数据的提交"><a href="#前台后台数据的提交" class="headerlink" title="前台后台数据的提交"></a>前台后台数据的提交</h1><h2 id="前台数据的提交"><a href="#前台数据的提交" class="headerlink" title="前台数据的提交"></a>前台数据的提交</h2><h3 id="get"><a href="#get" class="headerlink" title="get"></a>get</h3><p>get方式就是将表单元素的name属性值与用户输入的数据，组织成对的形式，放在url传递到所请求的文件 <br><br>直接在url上修改参数，可以模仿get方式提交数据</p>
 <h3 id="post"><a href="#post" class="headerlink" title="post"></a>post</h3><p>post方式就是将表单元素的name属性值与用户输入的数据，组织成对的形式，放在http协议中传递到所请求的文件</p>
-<h2 id="后台数据的接受"><a href="#后台数据的接受" class="headerlink" title="后台数据的接受"></a>后台数据的接受</h2><h3 id="GET"><a href="#GET" class="headerlink" title="$_GET"></a>$_GET</h3><p>用于接收前台使用GET方式提交的数据 <br><br>将前台传递过来的各个名值对中的名作为关联数组元素的键名，名值对中的值，作为关联数组元素的键值</p>
-<h3 id="POST"><a href="#POST" class="headerlink" title="$_POST"></a>$_POST</h3><p>用于接收前台使用POST方式提交的数据 <br><br>接收数据的方式个GET方式一样，只是存放数据的位置不一样</p>
-<h3 id="REQUEST"><a href="#REQUEST" class="headerlink" title="$_REQUEST"></a>$_REQUEST</h3><p>同时能够接受POST和GET方式提交的数据 </p>
+<pre><code>&lt;form action=&quot;8j.php&quot; method=&quot;post&quot;&gt; //method改为get就为get方式提交
+&lt;label for=&quot;name&quot;&gt;用户名&lt;input type=&quot;text&quot; name=&quot;name&quot; id=&quot;name&quot;&gt;&lt;/label&gt;&lt;br/&gt;
+&lt;label for=&quot;name&quot;&gt;密码&lt;input type=&quot;text&quot; name=&quot;pwd&quot; id=&quot;pwd&quot;&gt;&lt;/label&gt;&lt;br/&gt;
+&lt;input type=&quot;submit&quot; name=&quot;提交&quot;&gt;
+</code></pre><h2 id="后台数据的接受"><a href="#后台数据的接受" class="headerlink" title="后台数据的接受"></a>后台数据的接受</h2><h3 id="GET"><a href="#GET" class="headerlink" title="$_GET"></a>$_GET</h3><p>用于接收前台使用GET方式提交的数据 <br><br>将前台传递过来的各个名值对中的名作为关联数组元素的键名，名值对中的值，作为关联数组元素的键值</p>
+<pre><code>$name = $_GET[&apos;name&apos;]; 
+$pwd = $_GET[&apos;pwd&apos;];
+</code></pre><h3 id="POST"><a href="#POST" class="headerlink" title="$_POST"></a>$_POST</h3><p>用于接收前台使用POST方式提交的数据 <br><br>接收数据的方式个GET方式一样，只是存放数据的位置不一样</p>
+<pre><code>$name = $_POST[&apos;name&apos;]; 
+$pwd = $_POST[&apos;pwd&apos;];
+</code></pre><h3 id="REQUEST"><a href="#REQUEST" class="headerlink" title="$_REQUEST"></a>$_REQUEST</h3><p>同时能够接受POST和GET方式提交的数据 </p>
 <h2 id="特殊表单的提交"><a href="#特殊表单的提交" class="headerlink" title="特殊表单的提交"></a>特殊表单的提交</h2><p>对于复选框，在编写html时，需要在name属性值后面加[]，这个[]符号一旦被php接收后，会自动转换为数组</p>
 
     </article>
@@ -417,6 +425,11 @@ height:50vh;
     <!-- paginator  -->
     <ul class="post-paginator">
         <li class="next">
+            
+                <div class="nextSlogan">Next Post</div>
+                <a href= "/2018/08/02/sql/" title= sql注入笔记 >
+                    <div class="nextTitle">sql注入笔记</div>
+                </a>
             
         </li>
         <li class="previous">
@@ -667,9 +680,30 @@ top:50vh;
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     <div class="total-and-search">
         <div class="total-archive">
-        Total : 8
+        Total : 9
         </div>
         <!-- search  -->
         
@@ -679,6 +713,20 @@ top:50vh;
     
     
     
+    
+    <div class="archive-year"> 2018 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/02</span><a class="archive-post-title" href= "/2018/08/02/sql/" >sql注入笔记</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
     
     <div class="archive-year"> Invalid date </div>
     <ul class="year-list">
@@ -796,6 +844,8 @@ top:50vh;
         <span class="sidebar-tag-name" data-tags="php学习"><span class="iconfont-archer">&#xe606;</span>php学习</span>
     
         <span class="sidebar-tag-name" data-tags="sqli-libs"><span class="iconfont-archer">&#xe606;</span>sqli-libs</span>
+    
+        <span class="sidebar-tag-name" data-tags="sql注入"><span class="iconfont-archer">&#xe606;</span>sql注入</span>
     
     </div>
     <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
