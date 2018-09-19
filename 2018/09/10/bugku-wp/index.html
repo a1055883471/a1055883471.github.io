@@ -267,7 +267,7 @@ height:50vh;
                 
                 
                     <div class="post-intro-read">
-                        <span>Word count: <span class="post-count">672</span> / Reading time: <span class="post-count">3 min</span></span>
+                        <span>Word count: <span class="post-count">1,466</span> / Reading time: <span class="post-count">6 min</span></span>
                     </div>
                 
                 <div class="post-intro-meta">
@@ -412,6 +412,38 @@ echo &apos;flag{**********}&apos;;
 <h1 id="web3"><a href="#web3" class="headerlink" title="web3"></a>web3</h1><p>右键源代码，最底下有一串<code>&amp;#75;&amp;#69;&amp;#89;&amp;#123;&amp;#74;&amp;#50;&amp;#115;&amp;#97;&amp;#52;&amp;#50;&amp;#97;&amp;#104;&amp;#74;&amp;#75;&amp;#45;&amp;#72;&amp;#83;&amp;#49;&amp;#49;&amp;#73;&amp;#73;&amp;#73;&amp;#125;</code> <br><br>这一串编码为HTML实体编码，以&amp;#开头的后接十进制，以&amp;#x开头的后接十六进制，后面接的数字实际上是ascii编码 <br><br>解码可得flag</p>
 <h1 id="域名解析"><a href="#域名解析" class="headerlink" title="域名解析"></a>域名解析</h1><p>把flag.bugku.com 解析到120.24.86.145，打开本地hosts文件，输入<code>120.24.86.145 flag.bugku.com</code>即可 <br><br>值得注意的是，直接访问120.24.86.145显示的是400 <br><br>度娘的解释是，服务器不理解请求的语法。这里的意思应该是检查了请求包中的host字段，如果不为flag.bugku.com则返回400错误 <br><br>其实有个比改hosts文件更简便的方法，访问ip，抓包，将host字段的值改为flag.bugku.com即可，事实上，改hosts文件也就是将host字段改为hosts文件里对应的域名而已</p>
 <h1 id="你必须让他停下"><a href="#你必须让他停下" class="headerlink" title="你必须让他停下"></a>你必须让他停下</h1><p>打开页面，页面会不停的自动刷新，因为是用javascript来刷新页面，直接禁用js就可以让他停下，但是没用 <br><br>多抓几次包之后发现当刷新到的图片为10.jpg时，会显示出图片，切包中有flag，应该是随机刷新flag <br><br>利用bp的重放功能，随机刷新到10.jpg即可</p>
+<h1 id="本地包含"><a href="#本地包含" class="headerlink" title="本地包含"></a>本地包含</h1><pre><code>&lt;?php 
+    include &quot;flag.php&quot;; 
+    $a = @$_REQUEST[&apos;hello&apos;]; 
+    eval( &quot;var_dump($a);&quot;); 
+    show_source(__FILE__); 
+?&gt;
+</code></pre><p>观察代码可知这是一个任意代码执行漏洞，可以闭合代码或者直接执行<br>输入<code>?hello=file(&quot;flag.php&quot;)</code>或者<code>?hello=);print_r(file(&quot;flag.php&quot;)</code></p>
+<h1 id="变量1"><a href="#变量1" class="headerlink" title="变量1"></a>变量1</h1><pre><code>flag In the variable ! &lt;?php  
+
+error_reporting(0);            隐藏错误信息
+include &quot;flag1.php&quot;;
+highlight_file(__file__);
+if(isset($_GET[&apos;args&apos;])){
+    $args = $_GET[&apos;args&apos;];
+    if(!preg_match(&quot;/^\w+$/&quot;,$args)){    审计输入的内容，只能输入字母和下划线
+        die(&quot;args error!&quot;);
+    }
+    eval(&quot;var_dump($$args);&quot;);
+}
+?&gt;
+</code></pre><p>提示flag在变量中，但是不知道是哪个变量 <br><br><code>var_dump($$args)</code>这条意思是把$args的值作为变量的名字并打印出来 <br><br>但是我们不知道flag储存在哪个变量中。使用$GLOBALS，在php中，$GLOBALS为全局变量，其作用是包含了全部变量的全局组合数组。变量的名字就是数组的键。 <br><br>因为是get方式传值，在url中输入?args=GLOBALS即可</p>
+<h1 id="web5"><a href="#web5" class="headerlink" title="web5"></a>web5</h1><p>右键源代码，发现一串很奇怪的代码 <br><br><code>([][(![]+[])[+[]]+([![]]+[][[]])</code>大概是这样的内容，这其实是一串jsfuck代码 <br><br>按f12，打开控制台，直接把源代码中的jsfuck代码输入到控制台，回车就能得到答案</p>
+<h1 id="头等舱"><a href="#头等舱" class="headerlink" title="头等舱"></a>头等舱</h1><p>打开网页，什么都没有，源代码也是 <br><br>抓包查看响应头，能得到flag</p>
+<h1 id="网站被黑"><a href="#网站被黑" class="headerlink" title="网站被黑"></a>网站被黑</h1><p>打开御剑扫面网站后台，发现一个shell.php文件，点开发现是一个webshell，但是不知道webshell的密码 <br><br>用bp的爆破功能来爆破密码，字典用自带的passwords即可爆破，密码是hack</p>
+<h1 id="管理员系统"><a href="#管理员系统" class="headerlink" title="管理员系统"></a>管理员系统</h1><p>一开始以为是表单绕过，尝试注入之后发现并没有什么变化，提示ip被禁止访问 <br><br>查看源代码，发现一串被注释base64代码，这串代码右键源代码是看不见的，必须用f12的查看器才能看见 <br><br>解码之后等于test123，猜测是管理员的密码，但是输入之后还是提示ip被禁止，提示信息中有提到本地管理员，猜测是需要本地访问 <br><br>用bp抓包，在请求头中加入一对键值X-Forwarded-For : 127.0.0.1 <br><br>发包即可获得flag</p>
+<h1 id="web4"><a href="#web4" class="headerlink" title="web4"></a>web4</h1><p>右键源代码，看到一串js代码，大致意思就是将三串url编码过的代码连起来，解码之后得到完整的Js代码</p>
+<pre><code>p1=function checkSubmit(){var a=document.getElementById(&quot;password&quot;);if(&quot;undefined&quot;!=typeof a){if(&quot;67d709b2b54aa2aa648cf6e87a7114f1&quot;==a.value)return!0;alert(&quot;Error&quot;);a.focus();return!1}}document.getElementById(&quot;levelQuest&quot;).onsubmit=checkSubmit;
+</code></pre><p>这段代码的意思大致是判断输入的值是否为67d709b2b54aa2aa648cf6e87a7114f1，直接在输入框中输入就能得到flag</p>
+<h1 id="flag在index里"><a href="#flag在index里" class="headerlink" title="flag在index里"></a>flag在index里</h1><p>点击之后url中显示?file=show.php，猜测是文件包含漏洞 <br><br>输入?file=index.php之后，返回的源代码中有36000多个title标签，常试读取index.php的源代码，输入<code>?file=php://filter/read=convert.base64-encode/resource=index.php</code> <br><br>解码可得flag</p>
+<h1 id="输入密码查看flag"><a href="#输入密码查看flag" class="headerlink" title="输入密码查看flag"></a>输入密码查看flag</h1><p>提示5位数密码，直接用bp爆破即可。密码是13579</p>
+<h1 id="点击一百万次"><a href="#点击一百万次" class="headerlink" title="点击一百万次"></a>点击一百万次</h1><p>右键查看源代码，当点击数到一百万次的时候，会发送一个post，直接用hackbar发送clicks=999999999即可</p>
+<p>未完待续</p>
 
     </article>
     <!-- license  -->
@@ -426,6 +458,11 @@ echo &apos;flag{**********}&apos;;
     <!-- paginator  -->
     <ul class="post-paginator">
         <li class="next">
+            
+                <div class="nextSlogan">Next Post</div>
+                <a href= "/2018/09/17/PKIstudy/" title= PKI学习笔记 >
+                    <div class="nextTitle">PKI学习笔记</div>
+                </a>
             
         </li>
         <li class="previous">
@@ -561,7 +598,7 @@ top:50vh;
         <div class="toc-catalog">
             <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
         </div>
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#web2"><span class="toc-number">1.</span> <span class="toc-text">web2</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#计算器"><span class="toc-number">2.</span> <span class="toc-text">计算器</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#web基础-GET"><span class="toc-number">3.</span> <span class="toc-text">web基础$_GET</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#web基础-POST"><span class="toc-number">4.</span> <span class="toc-text">web基础$_POST</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#矛盾"><span class="toc-number">5.</span> <span class="toc-text">矛盾</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#web3"><span class="toc-number">6.</span> <span class="toc-text">web3</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#域名解析"><span class="toc-number">7.</span> <span class="toc-text">域名解析</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#你必须让他停下"><span class="toc-number">8.</span> <span class="toc-text">你必须让他停下</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#web2"><span class="toc-number">1.</span> <span class="toc-text">web2</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#计算器"><span class="toc-number">2.</span> <span class="toc-text">计算器</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#web基础-GET"><span class="toc-number">3.</span> <span class="toc-text">web基础$_GET</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#web基础-POST"><span class="toc-number">4.</span> <span class="toc-text">web基础$_POST</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#矛盾"><span class="toc-number">5.</span> <span class="toc-text">矛盾</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#web3"><span class="toc-number">6.</span> <span class="toc-text">web3</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#域名解析"><span class="toc-number">7.</span> <span class="toc-text">域名解析</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#你必须让他停下"><span class="toc-number">8.</span> <span class="toc-text">你必须让他停下</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#本地包含"><span class="toc-number">9.</span> <span class="toc-text">本地包含</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#变量1"><span class="toc-number">10.</span> <span class="toc-text">变量1</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#web5"><span class="toc-number">11.</span> <span class="toc-text">web5</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#头等舱"><span class="toc-number">12.</span> <span class="toc-text">头等舱</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#网站被黑"><span class="toc-number">13.</span> <span class="toc-text">网站被黑</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#管理员系统"><span class="toc-number">14.</span> <span class="toc-text">管理员系统</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#web4"><span class="toc-number">15.</span> <span class="toc-text">web4</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#flag在index里"><span class="toc-number">16.</span> <span class="toc-text">flag在index里</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#输入密码查看flag"><span class="toc-number">17.</span> <span class="toc-text">输入密码查看flag</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#点击一百万次"><span class="toc-number">18.</span> <span class="toc-text">点击一百万次</span></a></li></ol>
     </div>
     
     <div class="back-top iconfont-archer">&#xe639;</div>
@@ -727,9 +764,10 @@ top:50vh;
     
     
     
+    
     <div class="total-and-search">
         <div class="total-archive">
-        Total : 11
+        Total : 12
         </div>
         <!-- search  -->
         
@@ -740,26 +778,22 @@ top:50vh;
     
     
     
-    <div class="archive-year"> Invalid date </div>
-    <ul class="year-list">
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">Invalid date</span><a class="archive-post-title" href= "/2018/07/13/phpstudy-1/" >php学习笔记-基础部分</a>
-        </li>
-    
-    
-    
-    
-    
-        </ul>
-    
     <div class="archive-year"> 2018 </div>
     <ul class="year-list">
     
     
         <li class="archive-post-item">
+            <span class="archive-post-date">09/17</span><a class="archive-post-title" href= "/2018/09/17/PKIstudy/" >PKI学习笔记</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
             <span class="archive-post-date">09/10</span><a class="archive-post-title" href= "/2018/09/10/bugku-wp/" >bugku-web-wp</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/02</span><a class="archive-post-title" href= "/2018/08/02/sql/" >sql注入笔记</a>
         </li>
     
     
@@ -824,12 +858,12 @@ top:50vh;
     
         </ul>
     
-    <div class="archive-year"> 2018 </div>
+    <div class="archive-year"> Invalid date </div>
     <ul class="year-list">
     
     
         <li class="archive-post-item">
-            <span class="archive-post-date">08/02</span><a class="archive-post-title" href= "/2018/08/02/sql/" >sql注入笔记</a>
+            <span class="archive-post-date">Invalid date</span><a class="archive-post-title" href= "/2018/07/05/dvwa-low/" >基于DVWA的web漏洞原理-low</a>
         </li>
     
     
@@ -843,7 +877,7 @@ top:50vh;
     
     
         <li class="archive-post-item">
-            <span class="archive-post-date">Invalid date</span><a class="archive-post-title" href= "/2018/07/05/dvwa-low/" >基于DVWA的web漏洞原理-low</a>
+            <span class="archive-post-date">Invalid date</span><a class="archive-post-title" href= "/2018/07/13/phpstudy-1/" >php学习笔记-基础部分</a>
         </li>
     
     
@@ -861,6 +895,11 @@ top:50vh;
         </li>
     
     
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/05</span><a class="archive-post-title" href= "/2018/07/05/problem/" >搭博客过程中遇到的一些问题</a>
+        </li>
+    
+    
     
     
     
@@ -872,20 +911,6 @@ top:50vh;
     
         <li class="archive-post-item">
             <span class="archive-post-date">Invalid date</span><a class="archive-post-title" href= "/2018/09/05/python/" >python学习笔记</a>
-        </li>
-    
-    
-    
-    
-    
-        </ul>
-    
-    <div class="archive-year"> 2018 </div>
-    <ul class="year-list">
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">07/05</span><a class="archive-post-title" href= "/2018/07/05/problem/" >搭博客过程中遇到的一些问题</a>
         </li>
     
     </div>
@@ -904,6 +929,8 @@ top:50vh;
         <span class="sidebar-tag-name" data-tags="sqli-libs"><span class="iconfont-archer">&#xe606;</span>sqli-libs</span>
     
         <span class="sidebar-tag-name" data-tags="wp"><span class="iconfont-archer">&#xe606;</span>wp</span>
+    
+        <span class="sidebar-tag-name" data-tags="PKI"><span class="iconfont-archer">&#xe606;</span>PKI</span>
     
     </div>
     <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
